@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>SENTINEL — AI Security Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+<style>
+/* ── RESET ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#020508;
+  --surface:#040a10;
+  --card:#060d16;
+  --border:#0d1f33;
+  --border2:#162d47;
+  --border3:#1e3d5e;
+  --cyan:#00e5ff;
+  --cyan-glow:rgba(0,229,255,.18);
+  --green:#39ff14;
+  --green-dim:rgba(57,255,20,.08);
+  --red:#ff1744;
+  --red-dim:rgba(255,23,68,.1);
+  --amber:#ffc400;
+  --amber-dim:rgba(255,196,0,.09);
+  --text:#c8dce8;
+  --text2:#4a7a99;
+  --text3:#2a5570;
+  --mono:'Share Tech Mono',monospace;
+  --display:'Orbitron',sans-serif;
+  --sans:'Rajdhani',sans-serif;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg)}
+body{color:var(--text);font-family:var(--sans);font-size:13px;cursor:default}
+
+/* scanlines */
+body::before{
+  content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.06) 2px,rgba(0,0,0,.06) 4px);
+}
+
+/* ── HEADER ── */
+header{
+  height:52px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;background:var(--surface);
+  border-bottom:1px solid var(--border2);
+  flex-shrink:0;position:relative;z-index:100;
+  box-shadow:0 2px 20px rgba(0,229,255,.05);
+}
+header::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.2;
+}
+
+.logo{display:flex;align-items:center;gap:11px}
+.logo-hex{
+  width:34px;height:34px;display:grid;place-items:center;position:relative;
+  clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+  background:linear-gradient(135deg,#00b4cc,var(--cyan));
+  box-shadow:0 0 18px rgba(0,229,255,.35);
+}
+.logo-hex::before{
+  content:'';position:absolute;inset:2px;
+  clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+  background:var(--surface);
+}
+.logo-hex svg{position:relative;z-index:1}
+.logo-name{font-family:var(--display);font-size:15px;font-weight:900;color:var(--cyan);letter-spacing:6px;line-height:1;text-shadow:0 0 18px rgba(0,229,255,.45)}
+.logo-tag{font-family:var(--mono);font-size:8px;color:var(--text2);letter-spacing:2.5px;margin-top:2px}
+
+.hdr-center{position:absolute;left:50%;transform:translateX(-50%)}
+.sys-pill{
+  display:flex;align-items:center;gap:6px;padding:5px 14px;
+  border:1px solid rgba(57,255,20,.3);border-radius:2px;background:rgba(0,0,0,.35);
+  font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--green);
+}
+.sys-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:breathe 1.6s ease infinite}
+@keyframes breathe{0%,100%{opacity:1;box-shadow:0 0 5px var(--green)}50%{opacity:.25;box-shadow:none}}
+
+.hdr-right{display:flex;align-items:center;gap:16px}
+.hdr-metric{display:flex;flex-direction:column;align-items:flex-end;gap:1px}
+.hdr-val{font-family:var(--display);font-size:18px;font-weight:700;line-height:1}
+.hdr-val.green{color:var(--green)}
+.hdr-val.red{color:var(--red)}
+.hdr-lbl{font-family:var(--mono);font-size:8px;color:var(--text3);letter-spacing:2px}
+.hdr-sep{width:1px;height:26px;background:var(--border2)}
+.clock-wrap{display:flex;flex-direction:column;align-items:flex-end}
+#clock{font-family:var(--display);font-size:19px;font-weight:700;color:var(--cyan);letter-spacing:3px;line-height:1;text-shadow:0 0 12px rgba(0,229,255,.4)}
+#dateline{font-family:var(--mono);font-size:8px;color:var(--text3);letter-spacing:1.5px;margin-top:2px}
+
+/* ── ALARM BAR ── */
+#alarm{
+  height:0;overflow:hidden;display:flex;align-items:center;justify-content:center;
+  gap:12px;font-family:var(--mono);font-size:11px;letter-spacing:4px;text-transform:uppercase;
+  transition:height .25s ease;flex-shrink:0;position:relative;z-index:99;
+}
+#alarm.on{
+  height:38px;
+  background:linear-gradient(90deg,#8b0020,var(--red),#8b0020);
+  animation:almbg .55s ease infinite alternate;
+}
+@keyframes almbg{from{background:linear-gradient(90deg,#8b0020,var(--red),#8b0020)}to{background:linear-gradient(90deg,var(--red),#ff5370,var(--red))}}
+.alm-icon{font-size:15px;animation:shk .22s ease infinite alternate}
+@keyframes shk{from{transform:translateX(-2px)}to{transform:translateX(2px)}}
+#alm-text{color:#fff;font-weight:700}
+#alm-dismiss{
+  padding:3px 13px;border:1px solid rgba(255,255,255,.5);background:transparent;
+  color:#fff;font-family:var(--mono);font-size:9px;letter-spacing:2px;
+  cursor:pointer;border-radius:2px;transition:background .15s;
+}
+#alm-dismiss:hover{background:rgba(255,255,255,.18)}
+
+/* ── ROOT LAYOUT ── */
+.layout{
+  display:grid;
+  grid-template-columns:1fr 300px;
+  gap:8px;padding:8px 8px 8px;
+  height:calc(100vh - 52px);
+  overflow:hidden;
+}
+#alarm.on~.layout{height:calc(100vh - 90px)}
+
+/* ── SHARED PANEL ── */
+.panel{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:4px;overflow:hidden;display:flex;
+  flex-direction:column;
+}
+.ph{
+  display:flex;align-items:center;gap:7px;padding:6px 12px;
+  border-bottom:1px solid var(--border);background:rgba(0,0,0,.35);
+  font-family:var(--mono);font-size:9px;color:var(--text2);
+  letter-spacing:2.5px;text-transform:uppercase;flex-shrink:0;
+}
+.ph-dot{width:5px;height:5px;border-radius:50%;background:var(--cyan);animation:breathe 2s infinite}
+.ph-dot.r{background:var(--red);animation:breathe .8s infinite}
+.ph-dot.g{background:var(--green)}
+.ph-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.live-badge{
+  font-family:var(--mono);font-size:8px;padding:2px 7px;border-radius:1px;
+  color:var(--red);border:1px solid rgba(255,23,68,.4);background:var(--red-dim);
+  letter-spacing:1px;animation:liveblink 1.1s ease infinite alternate;
+}
+@keyframes liveblink{from{opacity:1}to{opacity:.4}}
+
+/* ── CAMERA PANEL ── */
+.cam-panel{flex:1;min-height:0}
+.cam-wrap{
+  flex:1;position:relative;background:#000;
+  overflow:hidden;min-height:0;display:flex;
+}
+
+/* THE FEED — img tag for reliable MJPEG */
+#feed{
+  width:100%;height:100%;
+  object-fit:cover;display:block;
+  /* no flickering: smooth brightness transition on reconnect */
+  transition:filter .4s ease;
+}
+#feed.dimmed{filter:brightness(.15) blur(4px) grayscale(.5)}
+
+/* Decorative overlays — all pointer-events:none */
+.cam-overlay{position:absolute;inset:0;pointer-events:none}
+
+/* Grid */
+.cam-grid{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(0,229,255,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,229,255,.035) 1px,transparent 1px);
+  background-size:48px 48px;
+}
+/* Vignette */
+.cam-vig{
+  position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.55) 100%);
+}
+/* Horizontal scan sweep */
+.cam-scan{
+  position:absolute;left:0;right:0;height:2px;top:0;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(0,229,255,.3),transparent);
+  animation:sweep 4s linear infinite;
+}
+@keyframes sweep{0%{top:0}100%{top:100%}}
+
+/* Corner brackets */
+.c{position:absolute;width:20px;height:20px;border-color:var(--cyan);border-style:solid;opacity:.55;pointer-events:none}
+.c.tl{top:12px;left:12px;border-width:2px 0 0 2px}
+.c.tr{top:12px;right:12px;border-width:2px 2px 0 0}
+.c.bl{bottom:12px;left:12px;border-width:0 0 2px 2px}
+.c.br{bottom:12px;right:12px;border-width:0 2px 2px 0}
+
+/* REC badge */
+.rec{
+  position:absolute;top:12px;left:12px;display:flex;align-items:center;
+  gap:5px;font-family:var(--mono);font-size:9px;color:var(--red);letter-spacing:1.5px;
+  background:rgba(2,5,8,.7);padding:3px 9px;border-radius:2px;pointer-events:none;
+}
+.rec-dot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:breathe .9s infinite}
+
+/* Top-center cam info */
+.cam-topbar{
+  position:absolute;top:12px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:8px;
+  background:rgba(2,5,8,.72);border:1px solid var(--border2);
+  padding:4px 14px;border-radius:2px;pointer-events:none;
+}
+.cam-topbar span{font-family:var(--mono);font-size:9px;letter-spacing:2px}
+.ct-id{color:var(--cyan)}
+.ct-sep{color:var(--border3)}
+.ct-fps{color:var(--text2)}
+.ct-res{color:var(--text3)}
+
+/* Bottom info strip */
+.cam-btm{
+  position:absolute;bottom:0;left:0;right:0;pointer-events:none;
+  background:linear-gradient(transparent,rgba(2,5,8,.82));
+  padding:20px 14px 10px;
+  display:flex;align-items:flex-end;justify-content:space-between;
+}
+.cb-ts{font-family:var(--mono);font-size:9px;color:rgba(200,220,232,.55);letter-spacing:1px}
+.cb-coord{font-family:var(--mono);font-size:8px;color:var(--text3);letter-spacing:.5px}
+
+/* Intruder flash overlay */
+.intruder-flash{
+  position:absolute;inset:0;border:3px solid var(--red);
+  background:rgba(255,23,68,.08);display:none;pointer-events:none;
+}
+.intruder-flash.on{display:block;animation:iflash .55s ease infinite alternate}
+@keyframes iflash{from{border-color:var(--red);background:rgba(255,23,68,.1)}to{border-color:#ff8fa3;background:rgba(255,23,68,.02)}}
+.intruder-tag{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:var(--red);color:#fff;font-family:var(--display);font-size:12px;
+  font-weight:700;letter-spacing:5px;padding:10px 28px;border-radius:2px;
+  display:none;pointer-events:none;
+  box-shadow:0 0 50px rgba(255,23,68,.7),inset 0 0 20px rgba(0,0,0,.3);
+  text-transform:uppercase;
+}
+
+/* Reconnect overlay */
+.conn-overlay{
+  position:absolute;inset:0;background:rgba(2,5,8,.9);
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;pointer-events:none;
+}
+.conn-overlay.visible{display:flex}
+.conn-spinner{
+  width:36px;height:36px;
+  border:2px solid var(--border2);border-top-color:var(--cyan);
+  border-radius:50%;animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.conn-msg{font-family:var(--mono);font-size:10px;color:var(--text2);letter-spacing:3px}
+.conn-sub{font-family:var(--mono);font-size:8px;color:var(--text3);letter-spacing:1.5px}
+.conn-retry-bar{
+  width:120px;height:2px;background:var(--border);border-radius:1px;overflow:hidden;
+}
+.conn-retry-fill{
+  height:100%;background:var(--cyan);width:0%;
+  transition:width linear;box-shadow:0 0 6px var(--cyan);
+}
+
+/* ── RIGHT COLUMN ── */
+.right-col{display:flex;flex-direction:column;gap:8px;overflow:hidden;min-height:0}
+
+/* ── STAT CARDS ── */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;flex-shrink:0}
+.sc{
+  background:var(--card);border:1px solid var(--border);border-radius:4px;
+  padding:10px 12px;position:relative;overflow:hidden;
+}
+.sc::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--cyan-glow),transparent);
+}
+.sc-lbl{font-family:var(--mono);font-size:8px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+.sc-val{font-family:var(--display);font-size:26px;font-weight:900;line-height:1}
+.sc-val.c{color:var(--cyan);text-shadow:0 0 14px rgba(0,229,255,.3)}
+.sc-val.g{color:var(--green);text-shadow:0 0 14px rgba(57,255,20,.25)}
+.sc-val.r{color:var(--red);text-shadow:0 0 12px rgba(255,23,68,.3)}
+.sc-val.a{color:var(--amber);text-shadow:0 0 12px rgba(255,196,0,.25)}
+.sc-sub{font-family:var(--mono);font-size:8px;color:var(--text3);margin-top:3px;letter-spacing:1px}
+/* bottom accent bar */
+.sc-bar{position:absolute;bottom:0;left:0;height:2px;width:0%;transition:width .7s ease}
+.sc-bar.c{background:var(--cyan);box-shadow:0 0 5px var(--cyan)}
+.sc-bar.g{background:var(--green);box-shadow:0 0 5px var(--green)}
+.sc-bar.r{background:var(--red);box-shadow:0 0 5px var(--red)}
+.sc-bar.a{background:var(--amber);box-shadow:0 0 5px var(--amber)}
+
+/* ── ALERT CARD ── */
+.alert-panel{flex-shrink:0}
+#alert-body{padding:8px 10px;min-height:80px}
+.no-alert{font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:2px;padding:12px 0;text-align:center}
+.alert-card{
+  padding:10px 12px;border-radius:3px;
+  border-left:3px solid var(--red);background:var(--red-dim);
+  animation:slidein .25s ease;
+}
+.alert-card.ok{border-left-color:var(--green);background:var(--green-dim)}
+@keyframes slidein{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.ac-type{font-family:var(--mono);font-size:8px;letter-spacing:3px;color:var(--red);text-transform:uppercase;margin-bottom:4px}
+.ac-type.ok{color:var(--green)}
+.ac-name{font-family:var(--display);font-size:13px;font-weight:700;margin-bottom:3px;letter-spacing:.5px}
+.ac-msg{font-size:11px;color:var(--text2);font-family:var(--sans)}
+.ac-time{font-family:var(--mono);font-size:8px;color:var(--text3);margin-top:6px;letter-spacing:1px}
+
+/* ── LOG PANEL ── */
+.log-panel{flex:1;min-height:0;display:flex;flex-direction:column}
+.log-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;background:rgba(0,0,0,.2)}
+.tb{
+  flex:1;padding:7px 4px;background:transparent;border:none;
+  border-bottom:2px solid transparent;
+  color:var(--text3);font-family:var(--mono);font-size:8px;
+  letter-spacing:2px;text-transform:uppercase;cursor:pointer;
+  transition:color .2s,border-color .2s;
+}
+.tb:hover{color:var(--text2)}
+.tb.on{color:var(--cyan);border-bottom-color:var(--cyan)}
+.tc{display:none;flex:1;flex-direction:column;overflow:hidden;min-height:0}
+.tc.on{display:flex}
+.log-list{flex:1;overflow-y:auto;padding:2px 0}
+.log-list::-webkit-scrollbar{width:2px}
+.log-list::-webkit-scrollbar-thumb{background:var(--border2)}
+.log-row{
+  display:grid;grid-template-columns:70px 1fr 60px;
+  align-items:center;gap:6px;padding:6px 10px;
+  border-bottom:1px solid rgba(13,31,51,.6);
+  transition:background .12s;animation:slidein .2s ease;
+}
+.log-row:hover{background:rgba(255,255,255,.025)}
+.lr-t{font-family:var(--mono);font-size:9px;color:var(--text3)}
+.lr-n{font-family:var(--sans);font-weight:600;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lr-b{font-family:var(--mono);font-size:8px;text-align:center;padding:2px 5px;border-radius:1px;letter-spacing:.5px;white-space:nowrap}
+.lr-b.arr{color:var(--green);border:1px solid rgba(57,255,20,.35);background:var(--green-dim)}
+.lr-b.dep{color:var(--amber);border:1px solid rgba(255,196,0,.3);background:var(--amber-dim)}
+.lr-b.int{color:var(--red);border:1px solid rgba(255,23,68,.4);background:var(--red-dim)}
+.empty{text-align:center;padding:22px;font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:2px}
+
+/* ── STATUS BAR ── */
+#statusbar{
+  position:fixed;bottom:0;left:0;right:0;height:22px;
+  background:rgba(2,5,8,.95);border-top:1px solid var(--border);
+  display:flex;align-items:center;padding:0 12px;gap:18px;
+  font-family:var(--mono);font-size:8px;color:var(--text3);letter-spacing:1.5px;z-index:200;
+}
+.sb-item{display:flex;align-items:center;gap:5px}
+.sbi{width:4px;height:4px;border-radius:50%}
+.sbi.ok{background:var(--green);box-shadow:0 0 4px var(--green)}
+.sbi.err{background:var(--red);box-shadow:0 0 4px var(--red)}
+.sbi.warn{background:var(--amber);box-shadow:0 0 4px var(--amber)}
+#sb-latency{color:var(--text2)}
+#sb-rc{color:var(--text3)}
+
+/* ── MODAL ── */
+#modal{display:none;position:fixed;inset:0;background:rgba(2,5,8,.92);z-index:500;backdrop-filter:blur(6px);overflow-y:auto;padding:24px}
+#modal.on{display:block}
+.modal-box{max-width:860px;margin:0 auto;background:#081120;border:1px solid var(--border3);border-radius:6px;overflow:hidden;box-shadow:0 0 60px rgba(0,229,255,.07)}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border2);font-family:var(--mono);font-size:10px;letter-spacing:3px;color:var(--text2);text-transform:uppercase;background:rgba(0,0,0,.3)}
+.m-close{background:transparent;border:1px solid var(--border2);color:var(--text2);font-family:var(--mono);font-size:9px;padding:4px 14px;cursor:pointer;border-radius:2px;letter-spacing:2px;transition:all .15s}
+.m-close:hover{border-color:var(--cyan);color:var(--cyan)}
+table{width:100%;border-collapse:collapse}
+thead th{padding:8px 16px;font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;text-align:left;border-bottom:1px solid var(--border);background:rgba(0,0,0,.2)}
+tbody tr{border-bottom:1px solid rgba(13,31,51,.5);transition:background .1s}
+tbody tr:hover{background:rgba(255,255,255,.015)}
+tbody td{padding:9px 16px;font-size:12px;font-family:var(--mono);color:var(--text)}
+.td-s{display:inline-block;padding:2px 9px;border-radius:2px;font-size:9px;letter-spacing:1.5px}
+.td-s.inside{color:var(--green);background:var(--green-dim);border:1px solid rgba(57,255,20,.25)}
+.td-s.left{color:var(--amber);background:var(--amber-dim);border:1px solid rgba(255,196,0,.25)}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══════════════════════════════════════════════ -->
+<header>
+  <div class="logo">
+    <div class="logo-hex">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+        <path d="M8 2L13 5V11L8 14L3 11V5L8 2Z" stroke="#00e5ff" stroke-width="1.3" fill="none"/>
+        <circle cx="8" cy="8" r="2.2" fill="#00e5ff"/>
+      </svg>
+    </div>
+    <div>
+      <div class="logo-name">SENTINEL</div>
+      <div class="logo-tag">AI Security Platform</div>
+    </div>
+  </div>
+
+  <div class="hdr-center">
+    <div class="sys-pill">
+      <div class="sys-dot"></div>
+      <span>SYSTEM ACTIVE</span>
+    </div>
+  </div>
+
+  <div class="hdr-right">
+    <div class="hdr-metric">
+      <div class="hdr-val green" id="h-auth">0</div>
+      <div class="hdr-lbl">Authorized</div>
+    </div>
+    <div class="hdr-sep"></div>
+    <div class="hdr-metric">
+      <div class="hdr-val red" id="h-int">0</div>
+      <div class="hdr-lbl">Intruders</div>
+    </div>
+    <div class="hdr-sep"></div>
+    <div class="clock-wrap">
+      <div id="clock">00:00:00</div>
+      <div id="dateline">–</div>
+    </div>
+  </div>
+</header>
+
+<!-- ══ ALARM BAR ════════════════════════════════════════════ -->
+<div id="alarm">
+  <span class="alm-icon">⚠</span>
+  <span id="alm-text">INTRUDER DETECTED</span>
+  <button id="alm-dismiss" onclick="dismissAlarm()">DISMISS</button>
+</div>
+
+<!-- ══ MAIN LAYOUT ═══════════════════════════════════════════ -->
+<div class="layout">
+
+  <!-- CAMERA PANEL -->
+  <div class="panel cam-panel">
+    <div class="ph">
+      <span class="ph-dot r"></span>
+      LIVE FEED
+      <div class="ph-right">
+        <span class="live-badge">● LIVE</span>
+        <span style="font-family:var(--mono);font-size:9px;color:var(--text2)">CAM-01 · MAIN ENTRANCE</span>
+      </div>
+    </div>
+
+    <div class="cam-wrap" id="cam-wrap">
+      <!--
+        CRITICAL: src must be exactly your Flask route.
+        In Jinja2 template use: {{ url_for('video_feed') }}
+        The FeedManager below handles all reconnection logic.
+      -->
+      <img id="feed"
+           src="/video_feed"
+           alt="Live Feed"
+           autocomplete="off"/>
+
+      <!-- Overlays -->
+      <div class="cam-grid"></div>
+      <div class="cam-vig"></div>
+      <div class="cam-scan"></div>
+
+      <div class="c tl"></div>
+      <div class="c tr"></div>
+      <div class="c bl"></div>
+      <div class="c br"></div>
+
+      <div class="rec">
+        <div class="rec-dot"></div>REC
+      </div>
+
+      <div class="cam-topbar">
+        <span class="ct-id">CAM-01</span>
+        <span class="ct-sep">|</span>
+        <span class="ct-fps" id="fps-disp">-- FPS</span>
+        <span class="ct-sep">|</span>
+        <span class="ct-res">MJPEG</span>
+      </div>
+
+      <div class="cam-btm">
+        <span class="cb-ts" id="cam-ts">--</span>
+        <span class="cb-coord" id="cam-coord">ZONE · MAIN ENTRANCE</span>
+      </div>
+
+      <!-- Intruder alert overlay (shown by JS) -->
+      <div class="intruder-flash" id="i-flash"></div>
+      <div class="intruder-tag" id="i-tag">⚠ INTRUDER</div>
+
+      <!-- Reconnect overlay (shown when stream drops) -->
+      <div class="conn-overlay" id="conn-ov">
+        <div class="conn-spinner"></div>
+        <div class="conn-msg" id="conn-msg">RECONNECTING</div>
+        <div class="conn-sub" id="conn-sub">Establishing stream…</div>
+        <div class="conn-retry-bar">
+          <div class="conn-retry-fill" id="conn-fill"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="right-col">
+
+    <!-- STAT CARDS — values driven by /stats endpoint -->
+    <div class="stats-grid">
+      <div class="sc">
+        <div class="sc-lbl">Present Now</div>
+        <div class="sc-val c" id="s-present">0</div>
+        <div class="sc-sub">currently inside</div>
+        <div class="sc-bar c" id="bar-present"></div>
+      </div>
+      <div class="sc">
+        <div class="sc-lbl">Authorized</div>
+        <div class="sc-val g" id="s-auth">0</div>
+        <div class="sc-sub">unique today</div>
+        <div class="sc-bar g" id="bar-auth"></div>
+      </div>
+      <div class="sc">
+        <div class="sc-lbl">Intruders</div>
+        <div class="sc-val r" id="s-int">0</div>
+        <div class="sc-sub">unknown faces</div>
+        <div class="sc-bar r" id="bar-int"></div>
+      </div>
+      <div class="sc">
+        <div class="sc-lbl">Total Events</div>
+        <div class="sc-val a" id="s-total">0</div>
+        <div class="sc-sub">arrivals today</div>
+        <div class="sc-bar a" id="bar-total"></div>
+      </div>
+    </div>
+
+    <!-- LATEST ALERT — driven by /alerts -->
+    <div class="panel alert-panel">
+      <div class="ph">
+        <span class="ph-dot r" id="alert-dot"></span>
+        LATEST ALERT
+        <div class="ph-right">
+          <span style="font-family:var(--mono);font-size:8px;color:var(--text3)" id="alert-count">0 TOTAL</span>
+        </div>
+      </div>
+      <div id="alert-body">
+        <div class="no-alert">-- NO ACTIVE ALERTS --</div>
+      </div>
+    </div>
+
+    <!-- EVENT LOG — driven by /logs -->
+    <div class="panel log-panel">
+      <div class="ph">
+        <span class="ph-dot"></span>
+        EVENT LOG
+        <div class="ph-right">
+          <button onclick="openModal()"
+            style="background:transparent;border:1px solid var(--border2);color:var(--cyan);font-family:var(--mono);font-size:8px;padding:2px 10px;cursor:pointer;border-radius:2px;letter-spacing:1px;transition:border-color .15s"
+            onmouseover="this.style.borderColor='var(--cyan)'"
+            onmouseout="this.style.borderColor='var(--border2)'">FULL LOG</button>
+        </div>
+      </div>
+      <div class="log-tabs">
+        <button class="tb on" onclick="switchTab(this,'tc-all')">All</button>
+        <button class="tb" onclick="switchTab(this,'tc-auth')">Authorized</button>
+        <button class="tb" onclick="switchTab(this,'tc-int')">Intruders</button>
+      </div>
+      <div id="tc-all" class="tc on"><div class="log-list" id="ll-all"></div></div>
+      <div id="tc-auth" class="tc"><div class="log-list" id="ll-auth"></div></div>
+      <div id="tc-int" class="tc"><div class="log-list" id="ll-int"></div></div>
+    </div>
+
+  </div><!-- /right-col -->
+</div><!-- /layout -->
+
+<!-- ══ STATUS BAR ════════════════════════════════════════════ -->
+<div id="statusbar">
+  <div class="sb-item"><div class="sbi ok" id="sb-stream"></div><span>STREAM</span></div>
+  <div class="sb-item"><div class="sbi ok" id="sb-api"></div><span>API</span></div>
+  <div class="sb-item"><div class="sbi ok" id="sb-alerts"></div><span>ALERTS</span></div>
+  <span style="margin-left:auto">LATENCY:</span>
+  <span id="sb-latency">-- ms</span>
+  <span style="color:var(--border3)">|</span>
+  <span id="sb-rc">RECONNECTS: 0</span>
+</div>
+
+<!-- ══ ATTENDANCE MODAL ══════════════════════════════════════ -->
+<div id="modal">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <span>Full Attendance Log</span>
+      <button class="m-close" onclick="closeModal()">✕ CLOSE</button>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Arrival</th><th>Departure</th><th>Status</th></tr>
+      </thead>
+      <tbody id="modal-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══ SCRIPTS ════════════════════════════════════════════════ -->
+<script>
+'use strict';
+
+// ─────────────────────────────────────────────────────────────
+//  CLOCK
+// ─────────────────────────────────────────────────────────────
+(function clockTick(){
+  const n = new Date();
+  document.getElementById('clock').textContent    = n.toTimeString().slice(0, 8);
+  document.getElementById('dateline').textContent = n.toDateString().toUpperCase();
+  // Camera timestamp overlay
+  const ts = n.toLocaleDateString('en-GB').replace(/\//g,'.') + '  ' + n.toTimeString().slice(0,8);
+  document.getElementById('cam-ts').textContent = ts;
+  setTimeout(clockTick, 1000);
+})();
+
+
+// ─────────────────────────────────────────────────────────────
+//  FEED MANAGER  — keeps the MJPEG <img> alive indefinitely
+//
+//  Strategy:
+//  1. Listen for 'load' events (MJPEG fires one per frame).
+//  2. If no load event arrives within STALL_MS, treat as stalled → reload.
+//  3. On 'error' → reload with exponential backoff (400 ms → max 8 s).
+//  4. On successful load after being offline → reset retry counter.
+//  5. Cache-bust every reload: ?_r=<timestamp> forces browser to re-fetch.
+//  6. When the browser tab is hidden, we skip health checks to avoid
+//     unnecessary reconnect churn; reload immediately on tab focus.
+// ─────────────────────────────────────────────────────────────
+class FeedManager {
+  constructor({ imgId, src, onOnline, onOffline }) {
+    this.img        = document.getElementById(imgId);
+    this.src        = src;           // base URL, e.g. '/video_feed'
+    this.onOnline   = onOnline  || (() => {});
+    this.onOffline  = onOffline || (() => {});
+
+    this.retries    = 0;
+    this.online     = false;
+    this._lastLoad  = Date.now();
+    this._retryTmr  = null;
+    this._healthTmr = null;
+    this._fpsTmr    = null;
+    this._frames    = 0;
+    this.reconnects = 0;
+
+    // Stall threshold: no load event in this many ms → stalled
+    this.STALL_MS   = 5000;
+    // Backoff: delay = min(BASE * MULT^retries, MAX)
+    this.BASE_MS    = 400;
+    this.MULT       = 1.6;
+    this.MAX_MS     = 8000;
+
+    this._bind();
+    this._startHealth();
+    this._startFPS();
+  }
+
+  _bind() {
+    // 'load' fires once per MJPEG frame while stream is healthy
+    this.img.addEventListener('load', () => this._onLoad(), { passive: true });
+    // 'error' fires when the HTTP connection drops
+    this.img.addEventListener('error', () => this._onError(), { passive: true });
+  }
+
+  _onLoad() {
+    this._lastLoad = Date.now();
+    this._frames++;
+
+    if (!this.online) {
+      // Came back online
+      this.online  = true;
+      this.retries = 0;
+      if (this._retryTmr) { clearTimeout(this._retryTmr); this._retryTmr = null; }
+      this.img.classList.remove('dimmed');
+      this.onOnline();
+    }
+  }
+
+  _onError() {
+    // Don't stack multiple retry timers
+    if (this._retryTmr) return;
+    this._goOffline();
+  }
+
+  _goOffline() {
+    if (this._retryTmr) return;   // already scheduled
+
+    const wasOnline = this.online;
+    this.online = false;
+    this.img.classList.add('dimmed');
+    this.onOffline();
+
+    if (wasOnline) this.reconnects++;
+
+    const delay = Math.min(this.BASE_MS * Math.pow(this.MULT, this.retries), this.MAX_MS);
+    this.retries++;
+    this._scheduleRetry(delay);
+  }
+
+  _scheduleRetry(delay) {
+    const fill  = document.getElementById('conn-fill');
+    const sub   = document.getElementById('conn-sub');
+    const msg   = document.getElementById('conn-msg');
+    if (msg) msg.textContent = 'RECONNECTING';
+    if (sub) sub.textContent = `Attempt ${this.retries}  ·  retrying in ${(delay/1000).toFixed(1)}s`;
+
+    // Animate the retry progress bar
+    if (fill) {
+      fill.style.transition = 'none';
+      fill.style.width = '0%';
+      requestAnimationFrame(() => {
+        fill.style.transition = `width ${delay}ms linear`;
+        fill.style.width = '100%';
+      });
+    }
+
+    this._retryTmr = setTimeout(() => {
+      this._retryTmr = null;
+      this._reload();
+    }, delay);
+  }
+
+  _reload() {
+    // Append timestamp to prevent browser serving cached (broken) response
+    this.img.src = `${this.src}?_r=${Date.now()}`;
+  }
+
+  _startHealth() {
+    // Periodically check if the stream has stalled silently
+    this._healthTmr = setInterval(() => {
+      if (document.hidden) return;          // tab hidden — don't churn
+      if (!this.online) return;             // already handling offline
+      const age = Date.now() - this._lastLoad;
+      if (age > this.STALL_MS) {
+        console.warn('[FeedManager] Stream stalled, forcing reload');
+        this._goOffline();
+      }
+    }, 2500);
+  }
+
+  _startFPS() {
+    this._fpsTmr = setInterval(() => {
+      const fps = this._frames;
+      this._frames = 0;
+      const el = document.getElementById('fps-disp');
+      if (el) el.textContent = fps > 0 ? `${fps} FPS` : (this.online ? '0 FPS' : '-- FPS');
+    }, 1000);
+  }
+
+  // Call this to force an immediate reload (e.g., tab regains focus)
+  forceReload() {
+    if (this._retryTmr) { clearTimeout(this._retryTmr); this._retryTmr = null; }
+    this._reload();
+  }
+}
+
+// ── Instantiate with Flask's video_feed route ──────────────
+const feedMgr = new FeedManager({
+  imgId: 'feed',
+  src:   '/video_feed',           // matches @app.route('/video_feed')
+
+  onOnline() {
+    document.getElementById('conn-ov').classList.remove('visible');
+    document.getElementById('sb-stream').className = 'sbi ok';
+    const rc = feedMgr.reconnects;
+    document.getElementById('sb-rc').textContent = `RECONNECTS: ${rc}`;
+  },
+  onOffline() {
+    document.getElementById('conn-ov').classList.add('visible');
+    document.getElementById('sb-stream').className = 'sbi err';
+  }
+});
+
+// Reload all feeds when user switches back to this tab
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) feedMgr.forceReload();
+});
+
+// Also reload if the window regains focus (covers alt-tab etc.)
+window.addEventListener('focus', () => feedMgr.forceReload());
+
+
+// ─────────────────────────────────────────────────────────────
+//  ALARM
+// ─────────────────────────────────────────────────────────────
+let alarmOn    = false;
+let alarmTimer = null;
+let lastSig    = null;
+let totalAlerts = 0;
+
+function triggerAlarm(msg) {
+  if (alarmOn) return;
+  alarmOn = true;
+  totalAlerts++;
+  document.getElementById('alm-text').textContent = msg;
+  document.getElementById('alarm').classList.add('on');
+  document.getElementById('i-flash').classList.add('on');
+  document.getElementById('i-tag').style.display = 'block';
+
+  // Beep using Web Audio API
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    function beep() {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'square';
+      osc.frequency.value = 880;
+      gain.gain.setValueAtTime(0.06, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.18);
+    }
+    beep();
+    alarmTimer = setInterval(beep, 1300);
+  } catch(e) {}
+}
+
+function dismissAlarm() {
+  alarmOn = false;
+  document.getElementById('alarm').classList.remove('on');
+  document.getElementById('i-flash').classList.remove('on');
+  document.getElementById('i-tag').style.display = 'none';
+  if (alarmTimer) { clearInterval(alarmTimer); alarmTimer = null; }
+}
+
+
+// ─────────────────────────────────────────────────────────────
+//  TABS
+// ─────────────────────────────────────────────────────────────
+function switchTab(btn, id) {
+  document.querySelectorAll('.tb').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('.tc').forEach(t => t.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById(id).classList.add('on');
+}
+
+
+// ─────────────────────────────────────────────────────────────
+//  API FETCH — tracks latency, updates status indicators
+// ─────────────────────────────────────────────────────────────
+async function apiFetch(url) {
+  const t0 = performance.now();
+  const res = await fetch(url, { cache: 'no-store' });
+  const ms  = Math.round(performance.now() - t0);
+  document.getElementById('sb-latency').textContent = `${ms} ms`;
+  document.getElementById('sb-api').className =
+    ms < 300 ? 'sbi ok' : ms < 800 ? 'sbi warn' : 'sbi err';
+  return res.json();
+}
+
+
+// ─────────────────────────────────────────────────────────────
+//  HELPERS
+// ─────────────────────────────────────────────────────────────
+const fmt = ts => ts ? ts.slice(11, 19) : '--:--:--';
+
+function mkRow(r) {
+  const cls = r.event === 'intruder' ? 'int' : r.event === 'arrival' ? 'arr' : 'dep';
+  const lbl = r.event === 'intruder' ? 'INTRDR' : r.event === 'arrival' ? 'ARRIVE' : 'DEPART';
+  return `<div class="log-row">
+    <span class="lr-t">${fmt(r.timestamp)}</span>
+    <span class="lr-n">${r.name}</span>
+    <span class="lr-b ${cls}">${lbl}</span>
+  </div>`;
+}
+
+function setBar(id, val, max) {
+  const el = document.getElementById(id);
+  if (el) el.style.width = Math.min(val / max * 100, 100) + '%';
+}
+
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el && el.textContent !== String(val)) el.textContent = val;
+}
+
+
+// ─────────────────────────────────────────────────────────────
+//  /logs — event log + compute authorized/intruder counts
+// ─────────────────────────────────────────────────────────────
+async function fetchLogs() {
+  try {
+    const data = await apiFetch('/logs');
+    if (!Array.isArray(data)) return;
+
+    const auth = data.filter(r => r.event !== 'intruder');
+    const ints = data.filter(r => r.event === 'intruder');
+
+    const html  = (arr) => arr.length ? arr.map(mkRow).join('') : '<div class="empty">-- NO EVENTS --</div>';
+    document.getElementById('ll-all').innerHTML  = html(data);
+    document.getElementById('ll-auth').innerHTML = html(auth);
+    document.getElementById('ll-int').innerHTML  = html(ints);
+  } catch(e) {
+    document.getElementById('sb-api').className = 'sbi err';
+  }
+}
+
+
+// ─────────────────────────────────────────────────────────────
+//  /stats — stat cards + header counters
+//  Uses the EXACT fields your Flask /stats returns:
+//  { present, authorized, intruders, total }
+// ─────────────────────────────────────────────────────────────
+async function fetchStats() {
+  try {
+    const d = await apiFetch('/stats');
+    if (d.error) return;
+
+    const present    = d.present    ?? 0;
+    const authorized = d.authorized ?? 0;
+    const intruders  = d.intruders  ?? 0;
+    const total      = d.total      ?? 0;
+
+    setText('s-present', present);
+    setText('s-auth',    authorized);
+    setText('s-int',     intruders);
+    setText('s-total',   total);
+
+    // Header counts
+    setText('h-auth', authorized);
+    setText('h-int',  intruders);
+
+    // Progress bars (tune max values to your expected scale)
+    setBar('bar-present', present,    10);
+    setBar('bar-auth',    authorized, 30);
+    setBar('bar-int',     intruders,  10);
+    setBar('bar-total',   total,      50);
+  } catch(e) {}
+}
+
+
+// ─────────────────────────────────────────────────────────────
+//  /alerts — latest alert card + triggers alarm
+//  Your Flask /alerts returns:
+//  { alert, type, name, timestamp, id }
+// ─────────────────────────────────────────────────────────────
+async function fetchAlerts() {
+  try {
+    const d = await apiFetch('/alerts');
+    if (!d || !d.alert) return;
+
+    document.getElementById('sb-alerts').className = 'sbi ok';
+
+    const isInt = d.type === 'intruder';
+    // Build a unique signature so we only alarm once per new event
+    const sig = String(d.id ?? '') + d.alert + (d.timestamp ?? '');
+
+    document.getElementById('alert-body').innerHTML = `
+      <div class="alert-card ${isInt ? '' : 'ok'}">
+        <div class="ac-type ${isInt ? '' : 'ok'}">${isInt ? '⚠ INTRUDER ALERT' : '✓ AUTHORIZED ACCESS'}</div>
+        <div class="ac-name">${d.name || d.alert}</div>
+        <div class="ac-msg">${d.alert}</div>
+        <div class="ac-time">${d.timestamp || ''}</div>
+      </div>`;
+
+    document.getElementById('alert-dot').className = isInt ? 'ph-dot r' : 'ph-dot g';
+    document.getElementById('alert-count').textContent = `${totalAlerts} TOTAL`;
+
+    if (isInt && sig !== lastSig) {
+      lastSig = sig;
+      triggerAlarm('⚠ INTRUDER DETECTED — SECURITY BREACH');
+    }
+  } catch(e) {
+    document.getElementById('sb-alerts').className = 'sbi err';
+  }
+}
+
+
+// ─────────────────────────────────────────────────────────────
+//  /attendance — full log modal
+// ─────────────────────────────────────────────────────────────
+function openModal() {
+  document.getElementById('modal').classList.add('on');
+  fetch('/attendance', { cache: 'no-store' })
+    .then(r => r.json())
+    .then(rows => {
+      if (!Array.isArray(rows)) return;
+      document.getElementById('modal-tbody').innerHTML = rows.map(r => `
+        <tr>
+          <td>${r.name}</td>
+          <td>${r.arrival_time}</td>
+          <td>${r.departure_time}</td>
+          <td><span class="td-s ${r.status === 'INSIDE' ? 'inside' : 'left'}">${r.status}</span></td>
+        </tr>`).join('');
+    })
+    .catch(() => {});
+}
+function closeModal() { document.getElementById('modal').classList.remove('on'); }
+document.getElementById('modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+
+// ─────────────────────────────────────────────────────────────
+//  POLLING — guard against concurrent overlapping calls
+// ─────────────────────────────────────────────────────────────
+let _pl = false, _ps = false, _pa = false;
+
+async function pollLogs()   { if(_pl) return; _pl=true; await fetchLogs().catch(()=>{}); _pl=false; }
+async function pollStats()  { if(_ps) return; _ps=true; await fetchStats().catch(()=>{}); _ps=false; }
+async function pollAlerts() { if(_pa) return; _pa=true; await fetchAlerts().catch(()=>{}); _pa=false; }
+
+// Initial fetch
+pollLogs(); pollStats(); pollAlerts();
+
+// Recurring intervals — pause when tab is hidden to reduce load
+function safePoll(fn) { if (!document.hidden) fn(); }
+setInterval(() => safePoll(pollLogs),   2500);   // logs every 2.5 s
+setInterval(() => safePoll(pollStats),  1000);   // stats every 1 s
+setInterval(() => safePoll(pollAlerts), 1500);   // alerts every 1.5 s
+</script>
+</body>
+</html>

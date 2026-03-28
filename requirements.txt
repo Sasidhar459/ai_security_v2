@@ -1,0 +1,11 @@
+ultralytics
+opencv-python
+deepface
+scikit-learn
+flask
+facenet-pytorch
+numpy
+pandas
+requests
+werkzeug
+pyodbc
