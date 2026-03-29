@@ -2,10 +2,16 @@
 security_system.py
 
 Pipeline:
-  YOLO detection → padded crop → MTCNN alignment → FaceNet embedding
-  → Dual Verification Gate (with high-confidence override)
-  → Smoothed per-track voting → known / intruder decision
-  → Telegram alert on confirmed intruder
+  YOLO detection -> padded crop -> MTCNN alignment -> FaceNet embedding
+  -> Dual Verification Gate (with high-confidence override)
+  -> Smoothed per-track voting -> known / intruder decision
+  -> Telegram alert on confirmed intruder
+
+Run with:
+    python security_system.py
+
+This starts BOTH the camera pipeline (main thread) AND
+the Flask dashboard (daemon thread on :5000).
 """
 
 import os
@@ -26,6 +32,8 @@ from collections import defaultdict, deque
 from scipy.spatial.distance import cosine
 from sklearn.preprocessing import normalize
 
+import shared_state  # shared globals consumed by flask_app.py
+
 from config import (
     BASE_DIR, MODEL_DIR,
     YOLO_FACE_MODEL, MODEL_PATH, SCALER_PATH, CENTROIDS_PATH,
@@ -40,9 +48,9 @@ from config import (
 )
 from telegram_send import send_telegram_async
 
-# -------------------------
+# ============================================================
 # Logging
-# -------------------------
+# ============================================================
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
@@ -50,15 +58,15 @@ logging.basicConfig(
 )
 log = logging.getLogger("security_system")
 
-# -------------------------
+# ============================================================
 # Device
-# -------------------------
+# ============================================================
 device = "cuda" if torch.cuda.is_available() else "cpu"
 log.info("Using device: %s", device)
 
-# -------------------------
+# ============================================================
 # Models
-# -------------------------
+# ============================================================
 log.info("Loading YOLO face model...")
 yolo = YOLO(YOLO_FACE_MODEL)
 try:
@@ -84,9 +92,9 @@ _fallback_transform = transforms.Compose([
     transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5]),
 ])
 
-# -------------------------
+# ============================================================
 # Classifier + scaler
-# -------------------------
+# ============================================================
 log.info("Loading classifier and scaler...")
 classifier  = None
 scaler      = None
@@ -112,9 +120,9 @@ if os.path.exists(SCALER_PATH):
 else:
     log.info("No scaler found; using raw embeddings.")
 
-# -------------------------
+# ============================================================
 # Centroids
-# -------------------------
+# ============================================================
 centroid_labels: list       = []
 centroid_matrix: np.ndarray = np.zeros((0, 512), dtype=np.float32)
 faiss_index                 = None
@@ -148,15 +156,15 @@ else:
         CENTROIDS_PATH,
     )
 
-# -------------------------
+# ============================================================
 # Tracker
-# -------------------------
+# ============================================================
 from utils.tracker import FaceTracker
 tracker = FaceTracker(timeout=DEPARTURE_TIMEOUT)
 
-# -------------------------
+# ============================================================
 # IntruderDB
-# -------------------------
+# ============================================================
 class IntruderDB:
     def __init__(self, path: str):
         self.path  = path
@@ -169,7 +177,7 @@ class IntruderDB:
                 with open(self.path, "r") as f:
                     return json.load(f)
             except Exception:
-                pass
+                log.exception("Failed to load intruder DB; starting fresh.")
         return {"next_id": 1, "records": {}}
 
     def _save(self):
@@ -179,8 +187,9 @@ class IntruderDB:
     def _day_reset(self, rec: dict):
         today = str(date.today())
         if rec.get("alert_date") != today:
-            rec["alert_count"] = 0
-            rec["alert_date"]  = today
+            rec["alert_count"]    = 0
+            rec["alert_date"]     = today
+            rec["alerts_stopped"] = False  # reset stop flag each new day
 
     def find_or_create(self, embedding: np.ndarray) -> str:
         with self.lock:
@@ -200,6 +209,7 @@ class IntruderDB:
                 "alert_date"   : str(date.today()),
                 "last_alert_ts": 0.0,
                 "last_seen_ts" : 0.0,
+                "alerts_stopped": False,
             }
             self._save()
             log.info("New intruder registered: %s", iid)
@@ -211,6 +221,9 @@ class IntruderDB:
             if not rec:
                 return False
             self._day_reset(rec)
+            # User stopped alerts for this intruder from the dashboard
+            if rec.get("alerts_stopped", False):
+                return False
             return (
                 rec["alert_count"] < INTRUDER_MAX_ALERTS
                 and time.time() - rec["last_alert_ts"] >= INTRUDER_ALERT_GAP
@@ -234,12 +247,38 @@ class IntruderDB:
             self._day_reset(rec)
             return rec["alert_count"]
 
+    def stop_alerts(self, iid: str):
+        """Called by Flask /stop_alert route — user dismissed this intruder."""
+        with self.lock:
+            rec = self._data["records"].get(iid)
+            if rec:
+                rec["alerts_stopped"] = True
+                self._save()
+                log.info("Alerts stopped for %s by user.", iid)
 
-intruder_db = IntruderDB(INTRUDER_DB_PATH)
+    def resume_alerts(self, iid: str):
+        """Called by Flask /resume_alert route — user re-enables alerts."""
+        with self.lock:
+            rec = self._data["records"].get(iid)
+            if rec:
+                rec["alerts_stopped"] = False
+                rec["last_alert_ts"]  = 0.0   # allow immediate next alert
+                self._save()
+                log.info("Alerts resumed for %s by user.", iid)
 
-# -------------------------
+    def is_stopped(self, iid: str) -> bool:
+        with self.lock:
+            rec = self._data["records"].get(iid)
+            return bool(rec.get("alerts_stopped", False)) if rec else False
+
+
+# Instantiate and expose via shared_state so flask_app can use it
+intruder_db            = IntruderDB(INTRUDER_DB_PATH)
+shared_state.intruder_db = intruder_db   # flask_app reads from here
+
+# ============================================================
 # Per-track state
-# -------------------------
+# ============================================================
 class TrackState:
     def __init__(self):
         self.votes          = deque(maxlen=SMOOTHING_FRAMES)
@@ -282,9 +321,9 @@ class TrackState:
 
 track_states: dict = defaultdict(TrackState)
 
-# -------------------------
+# ============================================================
 # Embedding helpers
-# -------------------------
+# ============================================================
 def get_padded_crop(frame: np.ndarray,
                     x1: int, y1: int, x2: int, y2: int) -> np.ndarray:
     h, w   = frame.shape[:2]
@@ -340,54 +379,24 @@ def get_centroid_distance(emb_scaled: np.ndarray) -> tuple:
 
 # ============================================================
 # DUAL VERIFICATION GATE
-#
-# Three possible outcomes:
-#
-#  1. HIGH-CONFIDENCE OVERRIDE
-#     classifier_prob >= CONFIDENCE_OVERRIDE (e.g. 0.96)
-#     → accept immediately, centroid check skipped
-#     → handles real-time lighting/angle variation for very
-#       confident predictions
-#
-#  2. NORMAL DUAL GATE
-#     classifier_prob >= CONFIDENCE_THRESHOLD (e.g. 0.85)
-#     AND centroid_dist <= CENTROID_ACCEPT_THRESHOLD (e.g. 0.72)
-#     AND centroid nearest name == classifier name
-#     → accept as known
-#
-#  3. REJECT → "Unknown"
-#     anything else
-#
-# TUNING:
-#   Known person wrongly flagged as intruder:
-#     → raise CENTROID_ACCEPT_THRESHOLD (e.g. 0.75, 0.80)
-#     → or lower CONFIDENCE_OVERRIDE (e.g. 0.93)
-#   Unknown slipping through as known:
-#     → lower CENTROID_ACCEPT_THRESHOLD (e.g. 0.65)
-#     → or raise CONFIDENCE_OVERRIDE (e.g. 0.98)
 # ============================================================
 def dual_verify(emb_scaled: np.ndarray,
                 classifier_name: str,
                 classifier_prob: float) -> tuple:
     """Return (verified_label, reason_string)."""
 
-    # --- Gate 0: High-confidence override ---
-    # If classifier is extremely confident, trust it without centroid check.
-    # This handles cases where real-time lighting shifts the embedding away
-    # from the training centroid for genuine known faces.
+    # Gate 0: High-confidence override
     if classifier_prob >= CONFIDENCE_OVERRIDE:
         return classifier_name, f"override(prob={classifier_prob:.2f})"
 
-    # --- Gate 1: Minimum classifier confidence ---
+    # Gate 1: Minimum classifier confidence
     if classifier_prob < CONFIDENCE_THRESHOLD:
         return "Unknown", f"low_prob({classifier_prob:.2f})"
 
-    # --- Gate 2: Centroid distance ---
+    # Gate 2: Centroid distance
     dist, nearest = get_centroid_distance(emb_scaled)
 
     if dist is None:
-        # No centroids available — fall back to classifier alone.
-        # Less secure but still functional.
         log.debug("No centroids; classifier-only for %s (prob=%.2f)",
                   classifier_name, classifier_prob)
         return classifier_name, f"no_centroids,classifier_only(prob={classifier_prob:.2f})"
@@ -398,21 +407,19 @@ def dual_verify(emb_scaled: np.ndarray,
             f"nearest={nearest},threshold={CENTROID_ACCEPT_THRESHOLD})"
         )
 
-    # --- Gate 3: Identity agreement ---
+    # Gate 3: Identity agreement
     if nearest != classifier_name:
         return "Unknown", (
             f"identity_mismatch(clf={classifier_name},"
             f"centroid={nearest},dist={dist:.2f})"
         )
 
-    # All gates passed
     return classifier_name, f"verified(prob={classifier_prob:.2f},dist={dist:.2f})"
+
+
 # ============================================================
-
-
-# -------------------------
 # Intruder alert
-# -------------------------
+# ============================================================
 def handle_intruder_alert(track_id: str, state: TrackState, frame: np.ndarray):
     if state.last_embedding is None:
         return
@@ -421,24 +428,30 @@ def handle_intruder_alert(track_id: str, state: TrackState, frame: np.ndarray):
     iid = state.intruder_id
     if not intruder_db.can_alert(iid):
         return
+
     ts            = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     img_path      = os.path.join(INTRUDER_DIR, f"{iid}_{ts}.jpg")
     cv2.imwrite(img_path, frame)
+
     count         = intruder_db.get_alert_count(iid)
     readable_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     msg = (
         f"[ALERT] Unknown person detected! [{iid}] at {readable_time}"
         if count == 0
-        else f"[WARN] Intruder [{iid}] still present — {readable_time}"
+        else f"[WARN] Intruder [{iid}] still present - {readable_time}"
     )
+
+    # Expose to Flask dashboard
+    shared_state.latest_alert = msg
+
     send_telegram_async(msg, img_path)
     intruder_db.record_alert(iid)
     log.info("[ALERT %d/%d] %s", count + 1, INTRUDER_MAX_ALERTS, msg)
 
 
-# -------------------------
+# ============================================================
 # Drawing
-# -------------------------
+# ============================================================
 def draw_label_box(frame: np.ndarray,
                    x1: int, y1: int, x2: int, y2: int,
                    display: str, color: tuple):
@@ -450,20 +463,24 @@ def draw_label_box(frame: np.ndarray,
                 cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
 
 
-# -------------------------
+# ============================================================
 # Frame processing
-# -------------------------
+# ============================================================
 _frame_count    = 0
 _last_frame_out = None
 
 
 def process_frame(frame: np.ndarray) -> np.ndarray:
     global _frame_count, _last_frame_out
+
     if frame is None or frame.size == 0:
         return frame
 
     _frame_count += 1
     if _frame_count % FRAME_SKIP != 0:
+        # Still update shared frame so the web feed doesn't freeze
+        if _last_frame_out is not None:
+            shared_state.latest_frame = _last_frame_out
         return _last_frame_out if _last_frame_out is not None else frame
 
     now            = time.time()
@@ -473,8 +490,8 @@ def process_frame(frame: np.ndarray) -> np.ndarray:
     # ---- YOLO detection ----
     try:
         results = yolo(frame, device=device, verbose=False)
-    except Exception as e:
-        log.exception("YOLO inference failed: %s", e)
+    except Exception:
+        log.exception("YOLO inference failed.")
         return frame
 
     face_entries = []
@@ -545,7 +562,7 @@ def process_frame(frame: np.ndarray) -> np.ndarray:
 
         # ---- Dual verification gate ----
         verified_label, reason = dual_verify(emb_scaled, top_name, max_prob)
-        log.debug("dual_verify → %s | %s", verified_label, reason)
+        log.debug("dual_verify -> %s | %s", verified_label, reason)
 
         # ---- Smoothed voting ----
         state.push(verified_label, embedding, now)
@@ -591,13 +608,15 @@ def process_frame(frame: np.ndarray) -> np.ndarray:
     for tid in [t for t in list(track_states) if t not in active_ids]:
         del track_states[tid]
 
+    # Expose processed frame to Flask video feed
+    shared_state.latest_frame = frame.copy()
     _last_frame_out = frame.copy()
     return frame
 
 
-# -------------------------
+# ============================================================
 # Safe display
-# -------------------------
+# ============================================================
 def safe_imshow(window_name: str, frame: np.ndarray, save_preview: bool = True):
     try:
         cv2.imshow(window_name, frame)
@@ -610,9 +629,9 @@ def safe_imshow(window_name: str, frame: np.ndarray, save_preview: bool = True):
                 log.exception("Failed to save preview.")
 
 
-# -------------------------
-# Main
-# -------------------------
+# ============================================================
+# Main - single entry point for camera + Flask
+# ============================================================
 def main():
     try:
         from database import test_connection, flush_db_queue
@@ -659,13 +678,20 @@ def main():
 
 
 if __name__ == "__main__":
+    # Start Flask dashboard as a background daemon thread
+    # use_reloader=False is critical — prevents Flask from spawning a child
+    # process which would have its own separate shared_state globals
     try:
         from flask_app import app
-        threading.Thread(
+        flask_thread = threading.Thread(
             target=app.run,
-            kwargs={"host": "0.0.0.0", "port": 5000, "debug": False},
+            kwargs={"host": "0.0.0.0", "port": 5000, "debug": False, "use_reloader": False},
             daemon=True,
-        ).start()
+        )
+        flask_thread.start()
+        log.info("Flask dashboard started on http://0.0.0.0:5000")
     except Exception:
-        log.debug("Flask app not started.")
+        log.exception("Flask app failed to start; continuing without dashboard.")
+
+    # Run camera pipeline in main thread
     main()
