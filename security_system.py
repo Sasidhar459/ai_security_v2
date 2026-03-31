@@ -6,12 +6,10 @@ Pipeline:
   -> Dual Verification Gate (with high-confidence override)
   -> Smoothed per-track voting -> known / intruder decision
   -> Telegram alert on confirmed intruder
+  -> Logging for performance analysis
 
 Run with:
     python security_system.py
-
-This starts BOTH the camera pipeline (main thread) AND
-the Flask dashboard (daemon thread on :5000).
 """
 
 import os
@@ -23,17 +21,18 @@ import time
 import json
 import logging
 import threading
+import csv
 from datetime import datetime, date
-from ultralytics import YOLO
-from facenet_pytorch import InceptionResnetV1, MTCNN
-from torchvision import transforms
-from PIL import Image
 from collections import defaultdict, deque
 from scipy.spatial.distance import cosine
 from sklearn.preprocessing import normalize
 
-import shared_state  # shared globals consumed by flask_app.py
+from ultralytics import YOLO
+from facenet_pytorch import InceptionResnetV1, MTCNN
+from torchvision import transforms
+from PIL import Image
 
+import shared_state
 from config import (
     BASE_DIR, MODEL_DIR,
     YOLO_FACE_MODEL, MODEL_PATH, SCALER_PATH, CENTROIDS_PATH,
@@ -47,9 +46,34 @@ from config import (
     CROP_PADDING, USE_FAISS,
 )
 from telegram_send import send_telegram_async
+from utils.tracker import FaceTracker
 
 # ============================================================
-# Logging
+# Logging for analysis
+# ============================================================
+LOG_DIR = "logs"
+os.makedirs(LOG_DIR, exist_ok=True)
+DETECTION_LOG = os.path.join(LOG_DIR, "detection_log.csv")
+PERFORMANCE_LOG = os.path.join(LOG_DIR, "performance_log.csv")
+
+# Initialize CSV writers
+detection_log_file = open(DETECTION_LOG, 'w', newline='')
+detection_writer = csv.writer(detection_log_file)
+detection_writer.writerow(['timestamp', 'face_id', 'confidence', 'true_label', 'predicted_label', 'processing_time'])
+
+performance_log_file = open(PERFORMANCE_LOG, 'w', newline='')
+performance_writer = csv.writer(performance_log_file)
+performance_writer.writerow(['timestamp', 'fps', 'avg_latency_ms'])
+
+# For FPS and latency tracking
+frame_times = deque(maxlen=30)   # store last 30 processing times (seconds)
+last_fps_log_time = time.time()
+fps_log_interval = 1.0
+frame_count = 0
+last_fps_time = time.time()
+
+# ============================================================
+# Logging (original)
 # ============================================================
 logging.basicConfig(
     level=logging.INFO,
@@ -159,7 +183,6 @@ else:
 # ============================================================
 # Tracker
 # ============================================================
-from utils.tracker import FaceTracker
 tracker = FaceTracker(timeout=DEPARTURE_TIMEOUT)
 
 # ============================================================
@@ -248,7 +271,6 @@ class IntruderDB:
             return rec["alert_count"]
 
     def stop_alerts(self, iid: str):
-        """Called by Flask /stop_alert route — user dismissed this intruder."""
         with self.lock:
             rec = self._data["records"].get(iid)
             if rec:
@@ -257,7 +279,6 @@ class IntruderDB:
                 log.info("Alerts stopped for %s by user.", iid)
 
     def resume_alerts(self, iid: str):
-        """Called by Flask /resume_alert route — user re-enables alerts."""
         with self.lock:
             rec = self._data["records"].get(iid)
             if rec:
@@ -464,17 +485,19 @@ def draw_label_box(frame: np.ndarray,
 
 
 # ============================================================
-# Frame processing
+# Frame processing (with logging)
 # ============================================================
 _frame_count    = 0
 _last_frame_out = None
 
 
 def process_frame(frame: np.ndarray) -> np.ndarray:
-    global _frame_count, _last_frame_out
+    global _frame_count, _last_frame_out, frame_count, last_fps_time
 
     if frame is None or frame.size == 0:
         return frame
+
+    start_time = time.time()   # measure frame processing time
 
     _frame_count += 1
     if _frame_count % FRAME_SKIP != 0:
@@ -519,7 +542,9 @@ def process_frame(frame: np.ndarray) -> np.ndarray:
 
         # ---- Embedding ----
         try:
+            embedding_start = time.time()
             embedding = get_embedding(face_crop)
+            embed_time = time.time() - embedding_start
         except Exception:
             log.exception("Embedding failed.")
             continue
@@ -537,16 +562,28 @@ def process_frame(frame: np.ndarray) -> np.ndarray:
                 handle_intruder_alert(track_id, state, frame)
             draw_label_box(frame, x1, y1, x2, y2,
                            f"{state.intruder_id} (dist:{dist:.2f})", (0, 0, 255))
+            # Log detection
+            detection_writer.writerow([
+                datetime.now().isoformat(),
+                track_id,
+                -1,   # no classifier confidence
+                "?",  # placeholder for ground truth
+                state.intruder_id,
+                embed_time * 1000
+            ])
             continue
 
         # ---- Classifier ----
         try:
+            classifier_start = time.time()
             proba    = classifier.predict_proba([emb_scaled])[0]
             max_prob = float(np.max(proba))
             top_name = classifier.classes_[np.argmax(proba)]
+            classify_time = time.time() - classifier_start
         except Exception:
             log.exception("Classifier failed.")
             max_prob, top_name = 0.0, "Unknown"
+            classify_time = 0
 
         # Fast-path: extremely low classifier confidence
         if max_prob < UNKNOWN_IMMEDIATE_THRESHOLD:
@@ -558,6 +595,14 @@ def process_frame(frame: np.ndarray) -> np.ndarray:
                 handle_intruder_alert(track_id, state, frame)
             draw_label_box(frame, x1, y1, x2, y2,
                            f"{state.intruder_id} (p:{max_prob:.2f})", (0, 0, 255))
+            detection_writer.writerow([
+                datetime.now().isoformat(),
+                track_id,
+                max_prob,
+                "?",
+                state.intruder_id,
+                (embed_time + classify_time) * 1000
+            ])
             continue
 
         # ---- Dual verification gate ----
@@ -568,25 +613,37 @@ def process_frame(frame: np.ndarray) -> np.ndarray:
         state.push(verified_label, embedding, now)
         stable = state.stable_label
 
+        # Determine final decision
         if state.is_confirmed_known():
-            display = f"{stable} ({max_prob:.2f})"
-            color   = (0, 200, 0)
+            final_label = stable
+            final_conf = max_prob
+            color = (0, 200, 0)
             detected_faces.append({"bbox": (x1, y1, x2, y2), "name": stable})
-
         elif state.is_confirmed_intruder(now):
             if state.intruder_id is None:
                 emb_db            = state.last_embedding if state.last_embedding is not None else embedding
                 state.intruder_id = intruder_db.find_or_create(emb_db)
-            display = f"{state.intruder_id} ({max_prob:.2f})"
-            color   = (0, 0, 255)
+            final_label = state.intruder_id
+            final_conf = max_prob
+            color = (0, 0, 255)
             handle_intruder_alert(track_id, state, frame)
-
         else:
-            label_text = verified_label if verified_label != "Unknown" else "Checking..."
-            display    = f"{label_text} ({max_prob:.2f})"
-            color      = (0, 165, 255)
+            final_label = verified_label if verified_label != "Unknown" else "Checking..."
+            final_conf = max_prob
+            color = (0, 165, 255)
 
+        display = f"{final_label} ({max_prob:.2f})"
         draw_label_box(frame, x1, y1, x2, y2, display, color)
+
+        # Log the detection
+        detection_writer.writerow([
+            datetime.now().isoformat(),
+            track_id,
+            max_prob,
+            "?",
+            final_label,
+            (embed_time + classify_time) * 1000
+        ])
 
     # ---- Tracker ----
     events, _ = tracker.update_with_ids(detected_faces)
@@ -611,6 +668,25 @@ def process_frame(frame: np.ndarray) -> np.ndarray:
     # Expose processed frame to Flask video feed
     shared_state.latest_frame = frame.copy()
     _last_frame_out = frame.copy()
+
+    # ---- Performance logging ----
+    processing_time = time.time() - start_time
+    frame_times.append(processing_time)
+    avg_latency = np.mean(frame_times) * 1000   # ms
+
+    # Log FPS and latency every second
+    frame_count += 1
+    current_time = time.time()
+    if current_time - last_fps_time >= 1.0:
+        fps = frame_count / (current_time - last_fps_time)
+        performance_writer.writerow([
+            datetime.now().isoformat(),
+            fps,
+            avg_latency
+        ])
+        frame_count = 0
+        last_fps_time = current_time
+
     return frame
 
 
@@ -674,13 +750,14 @@ def main():
             cv2.destroyAllWindows()
         except Exception:
             pass
+        # Close log files
+        detection_log_file.close()
+        performance_log_file.close()
         log.info("Shutdown complete.")
 
 
 if __name__ == "__main__":
     # Start Flask dashboard as a background daemon thread
-    # use_reloader=False is critical — prevents Flask from spawning a child
-    # process which would have its own separate shared_state globals
     try:
         from flask_app import app
         flask_thread = threading.Thread(
