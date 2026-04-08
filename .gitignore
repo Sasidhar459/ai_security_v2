@@ -2,7 +2,6 @@
 dataset
 intruder_images
 logs
-model
 yolov8_env
 __pycache__
 desktop.ini
