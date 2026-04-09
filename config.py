@@ -48,6 +48,11 @@ CONFIDENCE_THRESHOLD    = 0.85   # minimum prob for normal dual-gate path
 CONFIDENCE_OVERRIDE     = 0.96   # if prob >= this, skip centroid check entirely
 CENTROID_ACCEPT_THRESHOLD = 0.72 # max cosine distance to centroid  (relaxed from 0.55)
 
+# Accept a known person when classifier identity and centroid identity agree,
+# even if SVM probability is lower in live lighting/camera conditions.
+CENTROID_RESCUE_THRESHOLD = 0.60
+CENTROID_RESCUE_CONFIDENCE = 0.12
+
 # Below this prob → immediate intruder, skip all gates
 UNKNOWN_IMMEDIATE_THRESHOLD = 0.35
 

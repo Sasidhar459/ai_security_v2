@@ -1,0 +1,88 @@
+Real-Time Data Analysis
+=======================
+Detection log: logs\detection_log.csv
+Performance log: logs\performance_log.csv
+Frame log: logs\frame_log.csv
+Detection rows: 628
+Performance rows: 88
+Frame rows: 608
+Average confidence: 0.4249
+Minimum confidence: 0.0678
+Maximum confidence: 0.7224
+Average latency ms: 106.97
+Intruder/unknown decisions: 104
+Top predictions:
+  Sasidhar: 300
+  Mohan: 168
+  Checking...: 103
+  Bhanu: 42
+  Ajay: 14
+  INTRUDER_0095: 1
+Labeled detection rows: 628
+Binary authorized/unauthorized metrics:
+  Accuracy: 0.8344
+  Precision: 1.0000
+  Recall: 0.8344
+  F1-score: 0.9097
+  FAR: 0.0000
+  FRR: 0.1656
+  TP=524 TN=0 FP=0 FN=104
+Single-person identity accuracy skipped for this multi-person/binary test.
+Known vs Unknown Test Split:
+  Expected known people: Sasidhar, Mohan, Bhanu
+  Known-person test:
+    Rows: 628
+    Accepted as known: 524
+    Rejected as unknown/checking: 104
+    Known acceptance accuracy: 0.8344
+    FRR: 0.1656
+    Expected-name identity accuracy: 0.8121 (510/628)
+    Identity accuracy among accepted known rows: 0.9733 (510/524)
+    Wrong accepted identities:
+      Ajay: 14
+    Top rejection reasons:
+      low_prob(0.199): 4
+      low_prob(0.133): 3
+      low_prob(0.187): 3
+      low_prob(0.181): 3
+      low_prob(0.154): 2
+    Top rejected classifier predictions:
+      Mohan: 39
+      Ajay: 21
+      Bhanu: 20
+      Sasidhar: 6
+      E.NIROSHA: 3
+    Top rejected nearest centroids:
+      Mohan: 62
+      Bhanu: 22
+      Ajay: 3
+      C.HIMABINDU: 3
+      S.P.HUSSNA: 3
+    Current gate tuning estimate for next run:
+      Rescue gate: prob >= 0.12, centroid distance <= 0.60, classifier == nearest centroid
+      Projected known acceptance accuracy: 0.9108 (572/628)
+      Projected expected-name identity accuracy: 0.8838 (555/628)
+  Unknown/intruder test: no labeled unknown rows
+Frame-level summary:
+  Total frames logged: 608
+  Processed frames: 304
+  Skipped frames: 304
+  Frames with faces: 304
+  Average faces/frame: 1.03
+  Average frame log latency ms: 147.08
+Ground-truth people recorded:
+  Sasidhar, Mohan, Bhanu: 608 frames
+Average FPS: 2.88
+Minimum FPS: 0.11
+Maximum FPS: 4.94
+Average frame latency ms: 371.08
+
+Generated Graphs
+================
+analysis_report\test_reports\legacy_logs\graphs\realtime_metrics.png
+analysis_report\test_reports\legacy_logs\graphs\realtime_known_unknown_metrics.png
+analysis_report\test_reports\legacy_logs\graphs\realtime_confidence.png
+analysis_report\test_reports\legacy_logs\graphs\realtime_confidence_distribution.png
+analysis_report\test_reports\legacy_logs\graphs\realtime_predictions.png
+analysis_report\test_reports\legacy_logs\graphs\realtime_fps_latency.png
+analysis_report\test_reports\legacy_logs\graphs\realtime_faces_per_frame.png

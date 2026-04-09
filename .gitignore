@@ -1,7 +1,6 @@
 .venv
 dataset
 intruder_images
-logs
 model
 yolov8_env
 __pycache__
