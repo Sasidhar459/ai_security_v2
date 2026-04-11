@@ -3,25 +3,25 @@ Real-Time Data Analysis
 Detection log: logs\test_runs\unlabeled_20260409_104834\detection_log_unlabeled_20260409_104834.csv
 Performance log: logs\test_runs\unlabeled_20260409_104834\performance_log_unlabeled_20260409_104834.csv
 Frame log: logs\test_runs\unlabeled_20260409_104834\frame_log_unlabeled_20260409_104834.csv
-Detection rows: 904
-Performance rows: 195
-Frame rows: 1799
+Detection rows: 2513
+Performance rows: 542
+Frame rows: 5000
 Average confidence: 0.0971
 Minimum confidence: 0.0453
 Maximum confidence: 0.2832
 Average latency ms: 117.53
-Intruder/unknown decisions: 879
+Intruder/unknown decisions: 2444
 Top predictions:
-  Checking...: 655
-  INTRUDER_0072: 113
-  INTRUDER_0015: 103
-  Ajay: 13
-  INTRUDER_0041: 8
-  Jerry Lokesh: 7
-  P.SURYA: 3
-  Samir: 1
-  Ganesh: 1
-Labeled detection rows: 904
+  Checking...: 1822
+  INTRUDER_0072: 314
+  INTRUDER_0015: 286
+  Ajay: 36
+  INTRUDER_0041: 22
+  Jerry Lokesh: 19
+  P.SURYA: 8
+  Samir: 3
+  Ganesh: 3
+Labeled detection rows: 2513
 Binary authorized/unauthorized metrics:
   Accuracy: 0.9723
   Precision: 0.0000
@@ -29,32 +29,32 @@ Binary authorized/unauthorized metrics:
   F1-score: 0.0000
   FAR: 0.0277
   FRR: 0.0000
-  TP=0 TN=879 FP=25 FN=0
+  TP=0 TN=2444 FP=69 FN=0
 Single-person identity accuracy skipped for this multi-person/binary test.
 Known vs Unknown Test Split:
   Expected known people: not available in logs
   Known-person test: no labeled known rows
   Unknown/intruder test:
-    Rows: 904
-    Correctly rejected: 879
-    False accepted as known: 25
+    Rows: 2513
+    Correctly rejected: 2444
+    False accepted as known: 69
     Unknown rejection accuracy: 0.9723
     FAR: 0.0277
     False accepted identities:
-      Ajay: 13
-      Jerry Lokesh: 7
-      P.SURYA: 3
-      Samir: 1
-      Ganesh: 1
+      Ajay: 36
+      Jerry Lokesh: 19
+      P.SURYA: 8
+      Samir: 3
+      Ganesh: 3
 Frame-level summary:
-  Total frames logged: 1799
-  Processed frames: 899
-  Skipped frames: 900
-  Frames with faces: 898
+  Total frames logged: 5000
+  Processed frames: 2499
+  Skipped frames: 2501
+  Frames with faces: 2497
   Average faces/frame: 0.50
   Average frame log latency ms: 89.10
 Ground-truth people recorded:
-  unauthorized: 1799 frames
+  unauthorized: 5000 frames
 Average FPS: 4.09
 Minimum FPS: 0.04
 Maximum FPS: 5.14

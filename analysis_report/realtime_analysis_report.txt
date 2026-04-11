@@ -3,22 +3,22 @@ Real-Time Data Analysis
 Detection log: logs\detection_log.csv
 Performance log: logs\performance_log.csv
 Frame log: logs\frame_log.csv
-Detection rows: 628
-Performance rows: 88
-Frame rows: 608
+Detection rows: 5164
+Performance rows: 724
+Frame rows: 5000
 Average confidence: 0.4249
 Minimum confidence: 0.0678
 Maximum confidence: 0.7224
 Average latency ms: 106.97
-Intruder/unknown decisions: 104
+Intruder/unknown decisions: 855
 Top predictions:
-  Sasidhar: 300
-  Mohan: 168
-  Checking...: 103
-  Bhanu: 42
-  Ajay: 14
-  INTRUDER_0095: 1
-Labeled detection rows: 628
+  Sasidhar: 2467
+  Mohan: 1382
+  Checking...: 847
+  Bhanu: 345
+  Ajay: 115
+  INTRUDER_0095: 8
+Labeled detection rows: 5164
 Binary authorized/unauthorized metrics:
   Accuracy: 0.8344
   Precision: 1.0000
@@ -26,52 +26,130 @@ Binary authorized/unauthorized metrics:
   F1-score: 0.9097
   FAR: 0.0000
   FRR: 0.1656
-  TP=524 TN=0 FP=0 FN=104
+  TP=4309 TN=0 FP=0 FN=855
 Single-person identity accuracy skipped for this multi-person/binary test.
 Known vs Unknown Test Split:
   Expected known people: Sasidhar, Mohan, Bhanu
   Known-person test:
-    Rows: 628
-    Accepted as known: 524
-    Rejected as unknown/checking: 104
-    Known acceptance accuracy: 0.8344
-    FRR: 0.1656
-    Expected-name identity accuracy: 0.8121 (510/628)
-    Identity accuracy among accepted known rows: 0.9733 (510/524)
+    Rows: 5164
+    Accepted as known: 4309
+    Rejected as unknown/checking: 855
+    Known acceptance accuracy: 0.9733
+    FRR: 0.01656
+    Expected-name identity accuracy: 0.8121 (4194/5164)
+    Identity accuracy among accepted known rows: 0.9733 (4194/4309)
     Wrong accepted identities:
-      Ajay: 14
+      Ajay: 115
     Top rejection reasons:
-      low_prob(0.199): 4
-      low_prob(0.133): 3
-      low_prob(0.187): 3
-      low_prob(0.181): 3
-      low_prob(0.154): 2
+      low_prob(0.199): 33
+      low_prob(0.133): 25
+      low_prob(0.187): 25
+      low_prob(0.181): 25
+      low_prob(0.154): 16
     Top rejected classifier predictions:
-      Mohan: 39
-      Ajay: 21
-      Bhanu: 20
-      Sasidhar: 6
-      E.NIROSHA: 3
+      Mohan: 321
+      Ajay: 173
+      Bhanu: 164
+      Sasidhar: 49
+      E.NIROSHA: 25
     Top rejected nearest centroids:
-      Mohan: 62
-      Bhanu: 22
-      Ajay: 3
-      C.HIMABINDU: 3
-      S.P.HUSSNA: 3
+      Mohan: 510
+      Bhanu: 181
+      Ajay: 25
+      C.HIMABINDU: 25
+      S.P.HUSSNA: 25
     Current gate tuning estimate for next run:
       Rescue gate: prob >= 0.12, centroid distance <= 0.60, classifier == nearest centroid
-      Projected known acceptance accuracy: 0.9108 (572/628)
-      Projected expected-name identity accuracy: 0.8838 (555/628)
+      Projected known acceptance accuracy: 0.9108 (4704/5164)
+      Projected expected-name identity accuracy: 0.8838 (4564/5164)
   Unknown/intruder test: no labeled unknown rows
 Frame-level summary:
-  Total frames logged: 608
-  Processed frames: 304
-  Skipped frames: 304
-  Frames with faces: 304
+  Total frames logged: 5000
+  Processed frames: 2500
+  Skipped frames: 2500
+  Frames with faces: 2500
   Average faces/frame: 1.03
   Average frame log latency ms: 147.08
 Ground-truth people recorded:
-  Sasidhar, Mohan, Bhanu: 608 frames
+  Sasidhar, Mohan, Bhanu: 5000 frames
+Average FPS: 2.88
+Minimum FPS: 0.11
+Maximum FPS: 4.94
+Average frame latency ms: 371.08
+Real-Time Data Analysis
+=======================
+Detection log: logs\detection_log.csv
+Performance log: logs\performance_log.csv
+Frame log: logs\frame_log.csv
+Detection rows: 5164
+Performance rows: 724
+Frame rows: 5000
+Average confidence: 0.4249
+Minimum confidence: 0.0678
+Maximum confidence: 0.7224
+Average latency ms: 106.97
+Intruder/unknown decisions: 855
+Top predictions:
+  Sasidhar: 2467
+  Mohan: 1382
+  Checking...: 847
+  Bhanu: 345
+  Ajay: 115
+  INTRUDER_0095: 8
+Labeled detection rows: 5164
+Binary authorized/unauthorized metrics:
+  Accuracy: 0.8344
+  Precision: 1.0000
+  Recall: 0.8344
+  F1-score: 0.9097
+  FAR: 0.0000
+  FRR: 0.1656
+  TP=4309 TN=0 FP=0 FN=855
+Single-person identity accuracy skipped for this multi-person/binary test.
+Known vs Unknown Test Split:
+  Expected known people: Sasidhar, Mohan, Bhanu
+  Known-person test:
+    Rows: 5164
+    Accepted as known: 4309
+    Rejected as unknown/checking: 855
+    Known acceptance accuracy: 0.9733
+    FRR: 0.01656
+    Expected-name identity accuracy: 0.8121 (4194/5164)
+    Identity accuracy among accepted known rows: 0.9733 (4194/4309)
+    Wrong accepted identities:
+      Ajay: 115
+    Top rejection reasons:
+      low_prob(0.199): 33
+      low_prob(0.133): 25
+      low_prob(0.187): 25
+      low_prob(0.181): 25
+      low_prob(0.154): 16
+    Top rejected classifier predictions:
+      Mohan: 321
+      Ajay: 173
+      Bhanu: 164
+      Sasidhar: 49
+      E.NIROSHA: 25
+    Top rejected nearest centroids:
+      Mohan: 510
+      Bhanu: 181
+      Ajay: 25
+      C.HIMABINDU: 25
+      S.P.HUSSNA: 25
+    Current gate tuning estimate for next run:
+      Rescue gate: prob >= 0.12, centroid distance <= 0.60, classifier == nearest centroid
+      Projected known acceptance accuracy: 0.9108 (4704/5164)
+      Projected expected-name identity accuracy: 0.8838 (4564/5164)
+  Unknown/intruder test: no labeled unknown rows
+Frame-level summary:
+  Total frames logged: 5000
+  Processed frames: 2500
+  Skipped frames: 2500
+  Frames with faces: 2500
+  Average faces/frame: 1.03
+  Average frame log latency ms: 147.08
+Ground-truth people recorded:
+  Sasidhar, Mohan, Bhanu: 5000 frames
 Average FPS: 2.88
 Minimum FPS: 0.11
 Maximum FPS: 4.94
