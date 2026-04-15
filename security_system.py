@@ -9,6 +9,7 @@ Pipeline:
 """
 
 import os
+import sys
 import cv2
 import torch
 import numpy as np
@@ -41,6 +42,8 @@ from config import (
     KNOWN_DISTANCE_THRESHOLD, UNKNOWN_IMMEDIATE_THRESHOLD,
     INTRUDER_MAX_ALERTS, INTRUDER_ALERT_GAP, INTRUDER_EMBED_DIST,
     CROP_PADDING, USE_FAISS,
+    ALERT_ON_UNIDENTIFIED, UNIDENTIFIED_CONFIRM_SECS,
+    MIN_TRACK_AGE_FOR_INTRUDER,
 )
 from telegram_send import send_telegram_async
 
@@ -53,6 +56,7 @@ logging.basicConfig(
     handlers=[logging.FileHandler("security.log"), logging.StreamHandler()],
 )
 log = logging.getLogger("security_system")
+sys.modules.setdefault("security_system", sys.modules[__name__])
 
 # -------------------------
 # CSV logs for analysis
@@ -66,6 +70,7 @@ FRAME_LOG = os.path.join(LOG_DIR, "frame_log.csv")
 TEST_RUN_NAME = "default"
 TEST_RUN_DIR = LOG_DIR
 TEST_FILE_LOG_HANDLER = None
+_INITIALIZED_CSV_HEADERS: set[str] = set()
 
 DETECTION_FIELDS = [
     "timestamp", "frame_id", "face_id", "confidence", "true_label",
@@ -77,18 +82,25 @@ FRAME_FIELDS = [
     "timestamp", "frame_id", "processed", "face_count", "predicted_labels",
     "true_label", "true_people", "processing_time",
 ]
+latest_frame = None
+latest_alert = ""
 
 
 def ensure_csv_header(path: str, fields: list[str]):
+    if path in _INITIALIZED_CSV_HEADERS:
+        return
+
     if not os.path.exists(path) or os.path.getsize(path) == 0:
         with open(path, "w", newline="", encoding="utf-8") as f:
             csv.writer(f).writerow(fields)
+        _INITIALIZED_CSV_HEADERS.add(path)
         return
 
     with open(path, newline="", encoding="utf-8") as f:
         rows = list(csv.reader(f))
 
     if rows and rows[0] == fields:
+        _INITIALIZED_CSV_HEADERS.add(path)
         return
 
     if len(rows) > 1:
@@ -99,10 +111,12 @@ def ensure_csv_header(path: str, fields: list[str]):
 
     with open(path, "w", newline="", encoding="utf-8") as f:
         csv.writer(f).writerow(fields)
+    _INITIALIZED_CSV_HEADERS.add(path)
 
 
 def append_csv_row(path: str, fields: list[str], row: list):
-    ensure_csv_header(path, fields)
+    if path not in _INITIALIZED_CSV_HEADERS:
+        ensure_csv_header(path, fields)
     with open(path, "a", newline="", encoding="utf-8") as f:
         csv.writer(f).writerow(row)
 
@@ -132,6 +146,9 @@ def configure_test_log_paths(test_run_name: str):
     DETECTION_LOG = os.path.join(TEST_RUN_DIR, f"detection_log_{TEST_RUN_NAME}.csv")
     PERFORMANCE_LOG = os.path.join(TEST_RUN_DIR, f"performance_log_{TEST_RUN_NAME}.csv")
     FRAME_LOG = os.path.join(TEST_RUN_DIR, f"frame_log_{TEST_RUN_NAME}.csv")
+    _INITIALIZED_CSV_HEADERS.discard(DETECTION_LOG)
+    _INITIALIZED_CSV_HEADERS.discard(PERFORMANCE_LOG)
+    _INITIALIZED_CSV_HEADERS.discard(FRAME_LOG)
 
     ensure_csv_header(DETECTION_LOG, DETECTION_FIELDS)
     ensure_csv_header(PERFORMANCE_LOG, PERFORMANCE_FIELDS)
@@ -347,17 +364,22 @@ intruder_db = IntruderDB(INTRUDER_DB_PATH)
 class TrackState:
     def __init__(self):
         self.votes          = deque(maxlen=SMOOTHING_FRAMES)
+        self.total_frames   = 0
         self.first_unk_time = None
         self.intruder_id    = None
         self.last_embedding = None
+        self.unknown_streak = 0
 
     def push(self, label: str, embedding: np.ndarray, now: float):
+        self.total_frames += 1
         self.votes.append(label)
         self.last_embedding = embedding
         if label == "Unknown":
+            self.unknown_streak += 1
             if self.first_unk_time is None:
                 self.first_unk_time = now
         else:
+            self.unknown_streak = 0
             self.first_unk_time = None
 
     @property
@@ -375,12 +397,22 @@ class TrackState:
     def is_confirmed_known(self) -> bool:
         return len(self.votes) >= SMOOTHING_FRAMES and self.known_votes >= MIN_KNOWN_VOTES
 
-    def is_confirmed_intruder(self, now: float) -> bool:
+    def is_confirmed_intruder(self, now: float, fast_path: bool = False) -> bool:
+        required_votes = MIN_UNKNOWN_VOTES
+        confirm_secs = INTRUDER_CONFIRM_SECS
+
+        if fast_path and ALERT_ON_UNIDENTIFIED:
+            required_votes = min(MIN_UNKNOWN_VOTES, 3)
+            confirm_secs = min(INTRUDER_CONFIRM_SECS, UNIDENTIFIED_CONFIRM_SECS)
+
+        min_track_age = max(1, min(MIN_TRACK_AGE_FOR_INTRUDER, SMOOTHING_FRAMES))
         return (
-            len(self.votes) >= SMOOTHING_FRAMES
-            and self.unknown_votes >= MIN_UNKNOWN_VOTES
+            len(self.votes) >= required_votes
+            and self.total_frames >= min_track_age
+            and self.unknown_votes >= required_votes
+            and self.unknown_streak >= max(2, required_votes - 1)
             and self.first_unk_time is not None
-            and (now - self.first_unk_time) >= INTRUDER_CONFIRM_SECS
+            and (now - self.first_unk_time) >= confirm_secs
         )
 
 
@@ -527,16 +559,12 @@ def dual_verify(emb_scaled: np.ndarray,
 # Intruder alert
 # -------------------------
 def handle_intruder_alert(track_id: str, state: TrackState, frame: np.ndarray):
+    global latest_alert
     if state.last_embedding is None:
         return
     if state.intruder_id is None:
         state.intruder_id = intruder_db.find_or_create(state.last_embedding)
     iid = state.intruder_id
-    if not intruder_db.can_alert(iid):
-        return
-    ts            = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    img_path      = os.path.join(INTRUDER_DIR, f"{iid}_{ts}.jpg")
-    cv2.imwrite(img_path, frame)
     count         = intruder_db.get_alert_count(iid)
     readable_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     msg = (
@@ -544,6 +572,12 @@ def handle_intruder_alert(track_id: str, state: TrackState, frame: np.ndarray):
         if count == 0
         else f"[WARN] Intruder [{iid}] still present — {readable_time}"
     )
+    latest_alert = msg
+    if not intruder_db.can_alert(iid):
+        return
+    ts            = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    img_path      = os.path.join(INTRUDER_DIR, f"{iid}_{ts}.jpg")
+    cv2.imwrite(img_path, frame)
     send_telegram_async(msg, img_path)
     intruder_db.record_alert(iid)
     log.info("[ALERT %d/%d] %s", count + 1, INTRUDER_MAX_ALERTS, msg)
@@ -664,6 +698,13 @@ def draw_status_overlay(frame: np.ndarray, fps: float, face_count: int):
     )
 
 
+def publish_latest_frame(frame: np.ndarray | None):
+    global latest_frame
+    if frame is None or getattr(frame, "size", 0) == 0:
+        return
+    latest_frame = frame.copy()
+
+
 def process_frame(frame: np.ndarray) -> np.ndarray:
     global _frame_count, _last_frame_out, _last_perf_log_time, _perf_frame_count, _frame_id, _display_fps
     if frame is None or frame.size == 0:
@@ -680,7 +721,9 @@ def process_frame(frame: np.ndarray) -> np.ndarray:
             [],
             (time.time() - frame_start) * 1000,
         )
-        return _last_frame_out if _last_frame_out is not None else frame
+        out = _last_frame_out if _last_frame_out is not None else frame
+        publish_latest_frame(out)
+        return out
 
     now            = time.time()
     detected_faces = []
@@ -692,6 +735,7 @@ def process_frame(frame: np.ndarray) -> np.ndarray:
         results = yolo(frame, device=device, verbose=False)
     except Exception as e:
         log.exception("YOLO inference failed: %s", e)
+        publish_latest_frame(frame)
         return frame
 
     face_entries = []
@@ -732,7 +776,7 @@ def process_frame(frame: np.ndarray) -> np.ndarray:
         if dist is not None and dist > KNOWN_DISTANCE_THRESHOLD:
             state.push("Unknown", embedding, now)
             reason = f"distance_too_far(dist={dist:.3f},nearest={nearest})"
-            if state.is_confirmed_intruder(now):
+            if state.is_confirmed_intruder(now, fast_path=True):
                 if state.intruder_id is None:
                     state.intruder_id = intruder_db.find_or_create(embedding)
                 label_text = state.intruder_id
@@ -771,7 +815,7 @@ def process_frame(frame: np.ndarray) -> np.ndarray:
         ):
             state.push("Unknown", embedding, now)
             reason = f"low_prob({max_prob:.3f})"
-            if state.is_confirmed_intruder(now):
+            if state.is_confirmed_intruder(now, fast_path=True):
                 if state.intruder_id is None:
                     state.intruder_id = intruder_db.find_or_create(embedding)
                 label_text = state.intruder_id
@@ -798,13 +842,14 @@ def process_frame(frame: np.ndarray) -> np.ndarray:
         # ---- Smoothed voting ----
         state.push(verified_label, embedding, now)
         stable = state.stable_label
+        fast_intruder_path = verified_label == "Unknown" and ALERT_ON_UNIDENTIFIED
 
         if state.is_confirmed_known():
             display = f"{stable} ({max_prob:.2f})"
             color   = (0, 200, 0)
             detected_faces.append({"bbox": (x1, y1, x2, y2), "name": stable})
 
-        elif state.is_confirmed_intruder(now):
+        elif state.is_confirmed_intruder(now, fast_path=fast_intruder_path):
             if state.intruder_id is None:
                 emb_db            = state.last_embedding if state.last_embedding is not None else embedding
                 state.intruder_id = intruder_db.find_or_create(emb_db)
@@ -851,6 +896,7 @@ def process_frame(frame: np.ndarray) -> np.ndarray:
     _display_fps = instant_fps if _display_fps == 0.0 else (0.85 * _display_fps + 0.15 * instant_fps)
     draw_status_overlay(frame, _display_fps, len(face_entries))
     _last_frame_out = frame.copy()
+    publish_latest_frame(_last_frame_out)
 
     log_frame(_frame_id, True, len(face_entries), frame_predictions, elapsed_ms)
     _frame_times.append(elapsed_ms)
@@ -922,6 +968,7 @@ def main():
             if not ret:
                 time.sleep(0.05)
                 continue
+            publish_latest_frame(frame)
             out = process_frame(frame)
             safe_imshow("AI Security System", out)
             if cv2.waitKey(1) & 0xFF == ord("q"):

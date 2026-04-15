@@ -771,11 +771,14 @@ window.addEventListener('focus', () => feedMgr.forceReload());
 let alarmOn    = false;
 let alarmTimer = null;
 let lastSig    = null;
+let dismissedSig = null;
+let activeAlarmSig = null;
 let totalAlerts = 0;
 
-function triggerAlarm(msg) {
+function triggerAlarm(msg, sig = null) {
   if (alarmOn) return;
   alarmOn = true;
+  activeAlarmSig = sig;
   totalAlerts++;
   document.getElementById('alm-text').textContent = msg;
   document.getElementById('alarm').classList.add('on');
@@ -804,6 +807,8 @@ function triggerAlarm(msg) {
 
 function dismissAlarm() {
   alarmOn = false;
+  if (activeAlarmSig) dismissedSig = activeAlarmSig;
+  activeAlarmSig = null;
   document.getElementById('alarm').classList.remove('on');
   document.getElementById('i-flash').classList.remove('on');
   document.getElementById('i-tag').style.display = 'none';
@@ -930,7 +935,7 @@ async function fetchAlerts() {
 
     const isInt = d.type === 'intruder';
     // Build a unique signature so we only alarm once per new event
-    const sig = String(d.id ?? '') + d.alert + (d.timestamp ?? '');
+    const sig = String(d.id ?? d.alert ?? '');
 
     document.getElementById('alert-body').innerHTML = `
       <div class="alert-card ${isInt ? '' : 'ok'}">
@@ -945,7 +950,9 @@ async function fetchAlerts() {
 
     if (isInt && sig !== lastSig) {
       lastSig = sig;
-      triggerAlarm('⚠ INTRUDER DETECTED — SECURITY BREACH');
+      if (sig !== dismissedSig) {
+        triggerAlarm('⚠ INTRUDER DETECTED — SECURITY BREACH', sig);
+      }
     }
   } catch(e) {
     document.getElementById('sb-alerts').className = 'sbi err';
