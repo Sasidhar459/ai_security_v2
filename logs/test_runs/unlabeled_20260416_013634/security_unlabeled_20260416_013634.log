@@ -1,0 +1,10 @@
+2026-04-16 01:36:34,281 [INFO] Test logs for this run: S:\final_year_project\ai_security-main\logs\test_runs\unlabeled_20260416_013634
+2026-04-16 01:36:38,495 [INFO] Security system running. Press 'q' to quit.
+2026-04-16 01:36:54,539 [INFO] ARRIVAL  -> Sasidhar
+2026-04-16 01:37:19,844 [INFO] ARRIVAL  -> Sasidhar
+2026-04-16 01:38:10,004 [INFO] DEPARTURE -> Sasidhar
+2026-04-16 01:38:36,445 [INFO] DEPARTURE -> Sasidhar
+2026-04-16 01:40:02,544 [INFO] Received stop signal: SIGINT
+2026-04-16 01:40:02,544 [INFO] Interrupted by user.
+2026-04-16 01:40:02,544 [INFO] Shutdown started (main_loop_exit) at 2026-04-16T01:40:02
+2026-04-16 01:40:02,953 [INFO] Shutdown complete.

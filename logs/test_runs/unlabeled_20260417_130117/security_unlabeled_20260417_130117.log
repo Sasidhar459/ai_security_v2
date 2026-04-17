@@ -1,0 +1,455 @@
+2026-04-17 13:01:18,014 [INFO] Test logs for this run: S:\final_year_project\ai_security-main\logs\test_runs\unlabeled_20260417_130117
+2026-04-17 13:01:28,075 [INFO] Security system running. Press 'q' to quit.
+2026-04-17 13:02:07,204 [INFO] ARRIVAL  -> Sasidhar
+2026-04-17 13:02:17,372 [INFO] New intruder registered: INTRUDER_0113
+2026-04-17 13:02:17,372 [INFO] Confirmed intruder after smoothing: low_prob(0.076) track=3_2
+2026-04-17 13:02:17,615 [ERROR] Exception while sending photo to Telegram.
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+  File "C:\Users\lsdr2\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='api.telegram.org', port=443): Failed to resolve 'api.telegram.org' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\adapters.py", line 645, in send
+    resp = conn.urlopen(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='api.telegram.org', port=443): Max retries exceeded with url: /bot8489650776:AAE8lV1AtvqzXz7L-X8u6kquk0Cuj5sOtM8/sendPhoto (Caused by NameResolutionError("HTTPSConnection(host='api.telegram.org', port=443): Failed to resolve 'api.telegram.org' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\telegram_send.py", line 18, in _send_photo
+    response = requests.post(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\sessions.py", line 592, in request
+    resp = self.send(prep, **send_kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\sessions.py", line 706, in send
+    r = adapter.send(request, **kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\adapters.py", line 678, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='api.telegram.org', port=443): Max retries exceeded with url: /bot8489650776:AAE8lV1AtvqzXz7L-X8u6kquk0Cuj5sOtM8/sendPhoto (Caused by NameResolutionError("HTTPSConnection(host='api.telegram.org', port=443): Failed to resolve 'api.telegram.org' ([Errno 11001] getaddrinfo failed)"))
+2026-04-17 13:02:17,821 [INFO] [ALERT 1/2] Unknown person detected near the camera. Alert ID: INTRUDER_0113.
+2026-04-17 13:02:18,802 [INFO] Confirmed intruder after smoothing: low_prob(0.110) track=3_2
+2026-04-17 13:02:19,524 [INFO] Confirmed intruder after smoothing: low_prob(0.068) track=3_2
+2026-04-17 13:02:20,061 [ERROR] Exception while sending photo to Telegram.
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+  File "C:\Users\lsdr2\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='api.telegram.org', port=443): Failed to resolve 'api.telegram.org' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\adapters.py", line 645, in send
+    resp = conn.urlopen(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='api.telegram.org', port=443): Max retries exceeded with url: /bot8489650776:AAE8lV1AtvqzXz7L-X8u6kquk0Cuj5sOtM8/sendPhoto (Caused by NameResolutionError("HTTPSConnection(host='api.telegram.org', port=443): Failed to resolve 'api.telegram.org' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\telegram_send.py", line 18, in _send_photo
+    response = requests.post(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\sessions.py", line 592, in request
+    resp = self.send(prep, **send_kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\sessions.py", line 706, in send
+    r = adapter.send(request, **kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\adapters.py", line 678, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='api.telegram.org', port=443): Max retries exceeded with url: /bot8489650776:AAE8lV1AtvqzXz7L-X8u6kquk0Cuj5sOtM8/sendPhoto (Caused by NameResolutionError("HTTPSConnection(host='api.telegram.org', port=443): Failed to resolve 'api.telegram.org' ([Errno 11001] getaddrinfo failed)"))
+2026-04-17 13:02:20,309 [INFO] Confirmed intruder after smoothing: low_prob(0.082) track=3_2
+2026-04-17 13:02:21,147 [INFO] Confirmed intruder after smoothing: low_prob(0.067) track=3_2
+2026-04-17 13:02:22,665 [ERROR] Exception while sending photo to Telegram.
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+  File "C:\Users\lsdr2\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='api.telegram.org', port=443): Failed to resolve 'api.telegram.org' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\adapters.py", line 645, in send
+    resp = conn.urlopen(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='api.telegram.org', port=443): Max retries exceeded with url: /bot8489650776:AAE8lV1AtvqzXz7L-X8u6kquk0Cuj5sOtM8/sendPhoto (Caused by NameResolutionError("HTTPSConnection(host='api.telegram.org', port=443): Failed to resolve 'api.telegram.org' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\telegram_send.py", line 18, in _send_photo
+    response = requests.post(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\sessions.py", line 592, in request
+    resp = self.send(prep, **send_kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\sessions.py", line 706, in send
+    r = adapter.send(request, **kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\adapters.py", line 678, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='api.telegram.org', port=443): Max retries exceeded with url: /bot8489650776:AAE8lV1AtvqzXz7L-X8u6kquk0Cuj5sOtM8/sendPhoto (Caused by NameResolutionError("HTTPSConnection(host='api.telegram.org', port=443): Failed to resolve 'api.telegram.org' ([Errno 11001] getaddrinfo failed)"))
+2026-04-17 13:02:24,684 [WARNING] All photo attempts failed; sending text-only alert.
+2026-04-17 13:02:24,684 [ERROR] Exception while sending message to Telegram.
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+  File "C:\Users\lsdr2\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='api.telegram.org', port=443): Failed to resolve 'api.telegram.org' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\adapters.py", line 645, in send
+    resp = conn.urlopen(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='api.telegram.org', port=443): Max retries exceeded with url: /bot8489650776:AAE8lV1AtvqzXz7L-X8u6kquk0Cuj5sOtM8/sendMessage (Caused by NameResolutionError("HTTPSConnection(host='api.telegram.org', port=443): Failed to resolve 'api.telegram.org' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\telegram_send.py", line 37, in _send_message
+    response = requests.post(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\sessions.py", line 592, in request
+    resp = self.send(prep, **send_kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\sessions.py", line 706, in send
+    r = adapter.send(request, **kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\adapters.py", line 678, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='api.telegram.org', port=443): Max retries exceeded with url: /bot8489650776:AAE8lV1AtvqzXz7L-X8u6kquk0Cuj5sOtM8/sendMessage (Caused by NameResolutionError("HTTPSConnection(host='api.telegram.org', port=443): Failed to resolve 'api.telegram.org' ([Errno 11001] getaddrinfo failed)"))
+2026-04-17 13:02:34,323 [INFO] Confirmed intruder after smoothing: low_prob(0.091) track=13_3
+2026-04-17 13:02:34,465 [ERROR] Exception while sending photo to Telegram.
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+  File "C:\Users\lsdr2\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='api.telegram.org', port=443): Failed to resolve 'api.telegram.org' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\adapters.py", line 645, in send
+    resp = conn.urlopen(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='api.telegram.org', port=443): Max retries exceeded with url: /bot8489650776:AAE8lV1AtvqzXz7L-X8u6kquk0Cuj5sOtM8/sendPhoto (Caused by NameResolutionError("HTTPSConnection(host='api.telegram.org', port=443): Failed to resolve 'api.telegram.org' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\telegram_send.py", line 18, in _send_photo
+    response = requests.post(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\sessions.py", line 592, in request
+    resp = self.send(prep, **send_kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\sessions.py", line 706, in send
+    r = adapter.send(request, **kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\adapters.py", line 678, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='api.telegram.org', port=443): Max retries exceeded with url: /bot8489650776:AAE8lV1AtvqzXz7L-X8u6kquk0Cuj5sOtM8/sendPhoto (Caused by NameResolutionError("HTTPSConnection(host='api.telegram.org', port=443): Failed to resolve 'api.telegram.org' ([Errno 11001] getaddrinfo failed)"))
+2026-04-17 13:02:34,632 [INFO] [ALERT 1/2] Unknown person detected near the camera. Alert ID: INTRUDER_0019.
+2026-04-17 13:02:35,099 [INFO] Confirmed intruder after smoothing: low_prob(0.099) track=13_3
+2026-04-17 13:02:35,620 [INFO] Confirmed intruder after smoothing: low_prob(0.093) track=13_3
+2026-04-17 13:02:35,995 [INFO] Confirmed intruder after smoothing: low_prob(0.094) track=13_3
+2026-04-17 13:02:36,447 [INFO] Confirmed intruder after smoothing: low_prob(0.098) track=13_3
+2026-04-17 13:02:36,626 [ERROR] Exception while sending photo to Telegram.
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+  File "C:\Users\lsdr2\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='api.telegram.org', port=443): Failed to resolve 'api.telegram.org' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\adapters.py", line 645, in send
+    resp = conn.urlopen(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='api.telegram.org', port=443): Max retries exceeded with url: /bot8489650776:AAE8lV1AtvqzXz7L-X8u6kquk0Cuj5sOtM8/sendPhoto (Caused by NameResolutionError("HTTPSConnection(host='api.telegram.org', port=443): Failed to resolve 'api.telegram.org' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\telegram_send.py", line 18, in _send_photo
+    response = requests.post(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\sessions.py", line 592, in request
+    resp = self.send(prep, **send_kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\sessions.py", line 706, in send
+    r = adapter.send(request, **kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\adapters.py", line 678, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='api.telegram.org', port=443): Max retries exceeded with url: /bot8489650776:AAE8lV1AtvqzXz7L-X8u6kquk0Cuj5sOtM8/sendPhoto (Caused by NameResolutionError("HTTPSConnection(host='api.telegram.org', port=443): Failed to resolve 'api.telegram.org' ([Errno 11001] getaddrinfo failed)"))
+2026-04-17 13:02:38,655 [ERROR] Exception while sending photo to Telegram.
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+  File "C:\Users\lsdr2\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='api.telegram.org', port=443): Failed to resolve 'api.telegram.org' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\adapters.py", line 645, in send
+    resp = conn.urlopen(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='api.telegram.org', port=443): Max retries exceeded with url: /bot8489650776:AAE8lV1AtvqzXz7L-X8u6kquk0Cuj5sOtM8/sendPhoto (Caused by NameResolutionError("HTTPSConnection(host='api.telegram.org', port=443): Failed to resolve 'api.telegram.org' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\telegram_send.py", line 18, in _send_photo
+    response = requests.post(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\sessions.py", line 592, in request
+    resp = self.send(prep, **send_kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\sessions.py", line 706, in send
+    r = adapter.send(request, **kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\adapters.py", line 678, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='api.telegram.org', port=443): Max retries exceeded with url: /bot8489650776:AAE8lV1AtvqzXz7L-X8u6kquk0Cuj5sOtM8/sendPhoto (Caused by NameResolutionError("HTTPSConnection(host='api.telegram.org', port=443): Failed to resolve 'api.telegram.org' ([Errno 11001] getaddrinfo failed)"))
+2026-04-17 13:02:40,665 [WARNING] All photo attempts failed; sending text-only alert.
+2026-04-17 13:02:40,678 [ERROR] Exception while sending message to Telegram.
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+  File "C:\Users\lsdr2\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='api.telegram.org', port=443): Failed to resolve 'api.telegram.org' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\adapters.py", line 645, in send
+    resp = conn.urlopen(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='api.telegram.org', port=443): Max retries exceeded with url: /bot8489650776:AAE8lV1AtvqzXz7L-X8u6kquk0Cuj5sOtM8/sendMessage (Caused by NameResolutionError("HTTPSConnection(host='api.telegram.org', port=443): Failed to resolve 'api.telegram.org' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "S:\final_year_project\ai_security-main\telegram_send.py", line 37, in _send_message
+    response = requests.post(
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\sessions.py", line 592, in request
+    resp = self.send(prep, **send_kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\sessions.py", line 706, in send
+    r = adapter.send(request, **kwargs)
+  File "S:\final_year_project\ai_security-main\.venv\lib\site-packages\requests\adapters.py", line 678, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='api.telegram.org', port=443): Max retries exceeded with url: /bot8489650776:AAE8lV1AtvqzXz7L-X8u6kquk0Cuj5sOtM8/sendMessage (Caused by NameResolutionError("HTTPSConnection(host='api.telegram.org', port=443): Failed to resolve 'api.telegram.org' ([Errno 11001] getaddrinfo failed)"))
+2026-04-17 13:03:00,113 [INFO] ARRIVAL  -> Sasidhar
+2026-04-17 13:03:22,508 [INFO] Received stop signal: SIGINT
+2026-04-17 13:03:22,510 [INFO] Interrupted by user.
+2026-04-17 13:03:22,510 [INFO] Shutdown started (main_loop_exit) at 2026-04-17T13:03:22
+2026-04-17 13:03:22,907 [INFO] Shutdown complete.

@@ -44,6 +44,13 @@ os.makedirs(LOG_DIR, exist_ok=True)
 REPORT_DIR = os.path.join(BASE_DIR, "analysis_report")
 os.makedirs(REPORT_DIR, exist_ok=True)
 
+
+def _env_flag(name: str, default: bool) -> bool:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "y", "on"}
+
 # -------------------------
 # Database (SQL Server)
 # -------------------------
@@ -52,8 +59,33 @@ os.makedirs(REPORT_DIR, exist_ok=True)
 DB_CONFIG = {
     "driver": os.getenv("DB_DRIVER", "ODBC Driver 17 for SQL Server").strip(),
     "server": os.getenv("DB_SERVER", r"localhost\SQLEXPRESS").strip(),
-    "database": os.getenv("DB_NAME", "AI_SECURITY_SYSTEM").strip(),
+    "database": os.getenv("DB_NAME", "AI_SECURITY").strip(),
+    "schema": os.getenv("DB_SCHEMA", "dbo").strip(),
+    "persons_table": os.getenv("DB_PERSONS_TABLE", "Persons").strip(),
+    "attendance_table": os.getenv("DB_ATTENDANCE_TABLE", "Attendance").strip(),
+    "trusted_connection": _env_flag("DB_TRUSTED_CONNECTION", True),
+    "encrypt": _env_flag("DB_ENCRYPT", False),
+    "trust_server_certificate": _env_flag("DB_TRUST_SERVER_CERTIFICATE", True),
+    "timeout": int(os.getenv("DB_TIMEOUT", "5").strip()),
+    "username": os.getenv("DB_USERNAME", "").strip(),
+    "password": os.getenv("DB_PASSWORD", ""),
 }
+
+
+def build_db_connection_string() -> str:
+    parts = [
+        f"DRIVER={{{DB_CONFIG['driver']}}}",
+        f"SERVER={DB_CONFIG['server']}",
+        f"DATABASE={DB_CONFIG['database']}",
+        f"Encrypt={'yes' if DB_CONFIG['encrypt'] else 'no'}",
+        f"TrustServerCertificate={'yes' if DB_CONFIG['trust_server_certificate'] else 'no'}",
+    ]
+    if DB_CONFIG["trusted_connection"]:
+        parts.append("Trusted_Connection=yes")
+    else:
+        parts.append(f"UID={DB_CONFIG['username']}")
+        parts.append(f"PWD={DB_CONFIG['password']}")
+    return ";".join(parts) + ";"
 
 # -------------------------
 # Camera / runtime
@@ -74,11 +106,16 @@ CROP_PADDING = 0.20
 # -------------------------
 CONFIDENCE_THRESHOLD = 0.25
 CONFIDENCE_OVERRIDE = 0.80
-CENTROID_ACCEPT_THRESHOLD = 0.85
+# Tuned from generate_centroid.py guidance:
+# if the closest inter-person centroid distance is around 0.40 and
+# unknowns are typically 0.70+, then 0.55 is a safer midpoint than 0.85.
+CENTROID_ACCEPT_THRESHOLD = 0.55
 
 # Legacy rescue gate values still imported by security_system.py.
-CENTROID_RESCUE_THRESHOLD = 0.60
-CENTROID_RESCUE_CONFIDENCE = 0.12
+# Keep rescue stricter than the main accept threshold so it only helps when
+# centroid agreement is very strong.
+CENTROID_RESCUE_THRESHOLD = 0.45
+CENTROID_RESCUE_CONFIDENCE = 0.20
 
 UNKNOWN_IMMEDIATE_THRESHOLD = 0.12
 KNOWN_DISTANCE_THRESHOLD = 0.90

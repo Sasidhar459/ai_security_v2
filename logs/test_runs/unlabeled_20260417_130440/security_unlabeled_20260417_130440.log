@@ -1,0 +1,32 @@
+2026-04-17 13:04:40,998 [INFO] Test logs for this run: S:\final_year_project\ai_security-main\logs\test_runs\unlabeled_20260417_130440
+2026-04-17 13:04:48,280 [INFO] Security system running. Press 'q' to quit.
+2026-04-17 13:04:59,505 [INFO] Confirmed intruder after smoothing: low_prob(0.092) track=4_5
+2026-04-17 13:05:01,135 [INFO] Confirmed intruder after smoothing: low_prob(0.071) track=4_5
+2026-04-17 13:05:01,817 [INFO] Confirmed intruder after smoothing: low_prob(0.082) track=4_5
+2026-04-17 13:05:02,793 [INFO] Confirmed intruder after smoothing: low_prob(0.084) track=4_5
+2026-04-17 13:05:03,445 [INFO] Confirmed intruder after smoothing: low_prob(0.082) track=4_5
+2026-04-17 13:05:04,328 [INFO] Confirmed intruder after smoothing: low_prob(0.106) track=4_5
+2026-04-17 13:05:04,890 [INFO] Confirmed intruder after smoothing: low_prob(0.096) track=4_5
+2026-04-17 13:05:05,665 [INFO] Confirmed intruder after smoothing: low_prob(0.089) track=4_5
+2026-04-17 13:05:06,275 [INFO] Confirmed intruder after smoothing: low_prob(0.072) track=4_5
+2026-04-17 13:05:07,263 [INFO] Confirmed intruder after smoothing: low_prob(0.078) track=4_5
+2026-04-17 13:05:07,703 [INFO] Confirmed intruder after smoothing: low_prob(0.096) track=4_5
+2026-04-17 13:05:08,081 [INFO] Confirmed intruder after smoothing: low_prob(0.078) track=4_5
+2026-04-17 13:05:08,403 [INFO] Confirmed intruder after smoothing: low_prob(0.084) track=4_5
+2026-04-17 13:05:08,704 [INFO] Confirmed intruder after smoothing: low_prob(0.074) track=4_5
+2026-04-17 13:05:08,704 [INFO] ARRIVAL  -> Sasidhar
+2026-04-17 13:05:08,951 [INFO] Confirmed intruder after smoothing: low_prob(0.087) track=4_5
+2026-04-17 13:05:09,823 [INFO] Confirmed intruder after smoothing: low_prob(0.090) track=4_5
+2026-04-17 13:05:10,839 [INFO] Confirmed intruder after smoothing: low_prob(0.073) track=4_5
+2026-04-17 13:05:11,891 [INFO] Confirmed intruder after smoothing: low_prob(0.077) track=4_5
+2026-04-17 13:05:12,903 [INFO] Confirmed intruder after smoothing: low_prob(0.072) track=4_5
+2026-04-17 13:05:13,847 [INFO] Confirmed intruder after smoothing: low_prob(0.071) track=4_5
+2026-04-17 13:05:14,936 [INFO] Confirmed intruder after smoothing: low_prob(0.073) track=4_5
+2026-04-17 13:05:16,112 [INFO] Confirmed intruder after smoothing: low_prob(0.071) track=4_5
+2026-04-17 13:05:17,105 [INFO] Confirmed intruder after smoothing: low_prob(0.080) track=4_5
+2026-04-17 13:05:17,989 [INFO] Confirmed intruder after smoothing: low_prob(0.089) track=4_5
+2026-04-17 13:05:18,908 [INFO] Confirmed intruder after smoothing: low_prob(0.088) track=4_5
+2026-04-17 13:05:19,302 [INFO] Received stop signal: SIGINT
+2026-04-17 13:05:19,302 [INFO] Interrupted by user.
+2026-04-17 13:05:19,302 [INFO] Shutdown started (main_loop_exit) at 2026-04-17T13:05:19
+2026-04-17 13:05:19,728 [INFO] Shutdown complete.

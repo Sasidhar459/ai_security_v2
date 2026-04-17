@@ -20,7 +20,9 @@ import logging
 import threading
 import csv
 import argparse
+import atexit
 import re
+import signal
 from datetime import datetime, date
 from ultralytics import YOLO
 from facenet_pytorch import InceptionResnetV1, MTCNN
@@ -67,10 +69,12 @@ os.makedirs(LOG_DIR, exist_ok=True)
 DETECTION_LOG = os.path.join(LOG_DIR, "detection_log.csv")
 PERFORMANCE_LOG = os.path.join(LOG_DIR, "performance_log.csv")
 FRAME_LOG = os.path.join(LOG_DIR, "frame_log.csv")
+RUNTIME_STATE_FILE = os.path.join(LOG_DIR, "runtime_state.json")
 TEST_RUN_NAME = "default"
 TEST_RUN_DIR = LOG_DIR
 TEST_FILE_LOG_HANDLER = None
 _INITIALIZED_CSV_HEADERS: set[str] = set()
+_RUNTIME_STATE_LOCK = threading.Lock()
 
 DETECTION_FIELDS = [
     "timestamp", "frame_id", "face_id", "confidence", "true_label",
@@ -83,7 +87,62 @@ FRAME_FIELDS = [
     "true_label", "true_people", "processing_time",
 ]
 latest_frame = None
-latest_alert = ""
+latest_alert = None
+latest_frame_updated_at = None
+latest_alert_updated_at = None
+
+
+def read_runtime_state() -> dict:
+    if not os.path.exists(RUNTIME_STATE_FILE):
+        return {}
+    try:
+        with open(RUNTIME_STATE_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return data if isinstance(data, dict) else {}
+    except Exception:
+        log.exception("Failed to read runtime state file.")
+        return {}
+
+
+def write_runtime_state(active: bool, reason: str,
+                        timestamp: datetime | None = None,
+                        last_heartbeat: datetime | None = None):
+    now = timestamp or datetime.now()
+    heartbeat = last_heartbeat or now
+    payload = {
+        "active": active,
+        "pid": os.getpid(),
+        "reason": reason,
+        "updated_at": now.isoformat(),
+        "last_heartbeat": heartbeat.isoformat(),
+    }
+    with _RUNTIME_STATE_LOCK:
+        with open(RUNTIME_STATE_FILE, "w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2)
+
+
+def recover_unclean_shutdown(close_all_inside_attendance):
+    state = read_runtime_state()
+    if not state or not state.get("active"):
+        return
+
+    stamp_text = state.get("last_heartbeat") or state.get("updated_at")
+    recovered_time = datetime.now()
+    if isinstance(stamp_text, str) and stamp_text:
+        try:
+            recovered_time = datetime.fromisoformat(stamp_text)
+        except ValueError:
+            pass
+
+    log.warning(
+        "Previous run appears to have ended uncleanly. Closing open attendance rows at %s.",
+        recovered_time.isoformat(timespec="seconds"),
+    )
+    close_all_inside_attendance(recovered_time)
+    try:
+        write_runtime_state(False, "recovered_unclean_shutdown", recovered_time, recovered_time)
+    except Exception:
+        log.exception("Failed to write recovered runtime state.")
 
 
 def ensure_csv_header(path: str, fields: list[str]):
@@ -559,7 +618,7 @@ def dual_verify(emb_scaled: np.ndarray,
 # Intruder alert
 # -------------------------
 def handle_intruder_alert(track_id: str, state: TrackState, frame: np.ndarray):
-    global latest_alert
+    global latest_alert, latest_alert_updated_at
     if state.last_embedding is None:
         return
     if state.intruder_id is None:
@@ -567,12 +626,24 @@ def handle_intruder_alert(track_id: str, state: TrackState, frame: np.ndarray):
     iid = state.intruder_id
     count         = intruder_db.get_alert_count(iid)
     readable_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    is_repeat = count > 0
+    title = "Intruder Still Present" if is_repeat else "Intruder Detected"
     msg = (
-        f"[ALERT] Unknown person detected! [{iid}] at {readable_time}"
-        if count == 0
-        else f"[WARN] Intruder [{iid}] still present — {readable_time}"
+        f"Unknown person detected near the camera. Alert ID: {iid}."
+        if not is_repeat
+        else f"Unknown person is still visible near the camera. Alert ID: {iid}."
     )
-    latest_alert = msg
+    latest_alert = {
+        "id": f"{iid}:{count + 1}",
+        "type": "intruder",
+        "severity": "warning" if is_repeat else "critical",
+        "title": title,
+        "name": iid,
+        "message": msg,
+        "text": f"{title} - {iid}",
+        "timestamp": readable_time,
+    }
+    latest_alert_updated_at = datetime.now().isoformat()
     if not intruder_db.can_alert(iid):
         return
     ts            = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -699,10 +770,11 @@ def draw_status_overlay(frame: np.ndarray, fps: float, face_count: int):
 
 
 def publish_latest_frame(frame: np.ndarray | None):
-    global latest_frame
+    global latest_frame, latest_frame_updated_at
     if frame is None or getattr(frame, "size", 0) == 0:
         return
     latest_frame = frame.copy()
+    latest_frame_updated_at = datetime.now().isoformat()
 
 
 def process_frame(frame: np.ndarray) -> np.ndarray:
@@ -938,19 +1010,97 @@ def safe_imshow(window_name: str, frame: np.ndarray, save_preview: bool = True):
 # -------------------------
 def main():
     try:
-        from database import test_connection, flush_db_queue
+        from database import test_connection, flush_db_queue, close_all_inside_attendance
     except Exception:
         def test_connection(): return True
         def flush_db_queue():  pass
+        def close_all_inside_attendance(shutdown_time=None): return 0
 
     if not test_connection():
         log.error("Database connection failed; aborting.")
         return
 
+    recover_unclean_shutdown(close_all_inside_attendance)
+    try:
+        write_runtime_state(True, "startup")
+    except Exception:
+        log.exception("Failed to write startup runtime state.")
+
     cap = cv2.VideoCapture(CAMERA_INDEX)
     if not cap.isOpened():
         log.error("Cannot open camera index %s", CAMERA_INDEX)
+        try:
+            write_runtime_state(False, "camera_open_failed")
+        except Exception:
+            log.exception("Failed to write camera_open_failed runtime state.")
         return
+
+    shutdown_lock = threading.Lock()
+    shutdown_state = {"done": False}
+    signal_handlers_to_restore: list[tuple[int, object]] = []
+    last_heartbeat_write = 0.0
+
+    def finalize_shutdown(reason: str, shutdown_time: datetime | None = None):
+        with shutdown_lock:
+            if shutdown_state["done"]:
+                return
+            shutdown_state["done"] = True
+
+        when = shutdown_time or datetime.now()
+        log.info("Shutdown started (%s) at %s", reason, when.isoformat(timespec="seconds"))
+
+        try:
+            flush_db_queue()
+        except Exception:
+            log.exception("Failed while flushing DB queue during shutdown.")
+
+        try:
+            close_all_inside_attendance(when)
+        except Exception:
+            log.exception("Failed while closing INSIDE attendance rows during shutdown.")
+
+        try:
+            write_runtime_state(False, reason, when, when)
+        except Exception:
+            log.exception("Failed to write shutdown runtime state.")
+
+        try:
+            cap.release()
+        except Exception:
+            log.exception("Failed to release camera during shutdown.")
+
+        try:
+            cv2.destroyAllWindows()
+        except Exception:
+            pass
+
+        for sig_num, previous_handler in signal_handlers_to_restore:
+            try:
+                signal.signal(sig_num, previous_handler)
+            except Exception:
+                pass
+
+        log.info("Shutdown complete.")
+
+    atexit.register(finalize_shutdown, "process_exit")
+
+    def handle_stop_signal(sig_num, _frame):
+        try:
+            sig_name = signal.Signals(sig_num).name
+        except Exception:
+            sig_name = str(sig_num)
+        log.info("Received stop signal: %s", sig_name)
+        raise KeyboardInterrupt
+
+    for sig_name in ("SIGINT", "SIGTERM", "SIGBREAK"):
+        sig_num = getattr(signal, sig_name, None)
+        if sig_num is None:
+            continue
+        try:
+            signal_handlers_to_restore.append((sig_num, signal.getsignal(sig_num)))
+            signal.signal(sig_num, handle_stop_signal)
+        except Exception:
+            pass
 
     try:
         from retrain_job import start_scheduler_thread
@@ -968,6 +1118,18 @@ def main():
             if not ret:
                 time.sleep(0.05)
                 continue
+            now_loop = time.time()
+            if now_loop - last_heartbeat_write >= 2.0:
+                try:
+                    write_runtime_state(
+                        True,
+                        "running",
+                        datetime.now(),
+                        datetime.now(),
+                    )
+                    last_heartbeat_write = now_loop
+                except Exception:
+                    log.exception("Failed to update runtime heartbeat.")
             publish_latest_frame(frame)
             out = process_frame(frame)
             safe_imshow("AI Security System", out)
@@ -976,13 +1138,7 @@ def main():
     except KeyboardInterrupt:
         log.info("Interrupted by user.")
     finally:
-        flush_db_queue()
-        cap.release()
-        try:
-            cv2.destroyAllWindows()
-        except Exception:
-            pass
-        log.info("Shutdown complete.")
+        finalize_shutdown("main_loop_exit")
 
 
 def parse_args():

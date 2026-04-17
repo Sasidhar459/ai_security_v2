@@ -1,0 +1,13 @@
+2026-04-16 00:10:25,193 [INFO] Test logs for this run: S:\final_year_project\ai_security-main\logs\test_runs\unlabeled_20260416_001025
+2026-04-16 00:10:28,436 [INFO] Security system running. Press 'q' to quit.
+2026-04-16 00:10:37,645 [INFO] ARRIVAL  -> Sasidhar
+2026-04-16 00:14:44,107 [INFO] ARRIVAL  -> Bhanu
+2026-04-16 00:15:48,821 [INFO] DEPARTURE -> Bhanu
+2026-04-16 00:17:16,787 [INFO] ARRIVAL  -> Sasidhar
+2026-04-16 00:17:58,728 [INFO] ARRIVAL  -> Sasidhar
+2026-04-16 00:18:52,686 [INFO] DEPARTURE -> Sasidhar
+2026-04-16 00:19:12,603 [INFO] DEPARTURE -> Sasidhar
+2026-04-16 00:20:48,405 [INFO] ARRIVAL  -> Sasidhar
+2026-04-16 00:21:48,629 [INFO] DEPARTURE -> Sasidhar
+2026-04-16 00:23:19,989 [INFO] Interrupted by user.
+2026-04-16 00:23:20,348 [INFO] Shutdown complete.

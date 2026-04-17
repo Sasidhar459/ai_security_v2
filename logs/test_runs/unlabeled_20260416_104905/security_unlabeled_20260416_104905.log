@@ -1,0 +1,506 @@
+2026-04-16 10:49:05,824 [INFO] Test logs for this run: S:\final_year_project\ai_security-main\logs\test_runs\unlabeled_20260416_104905
+2026-04-16 10:49:09,892 [INFO] Security system running. Press 'q' to quit.
+2026-04-16 10:49:19,325 [INFO] ARRIVAL  -> Sasidhar
+2026-04-16 10:49:26,541 [INFO] [ALERT 1/2] Unknown person detected near the camera. Alert ID: INTRUDER_0033.
+2026-04-16 10:49:28,966 [INFO] Telegram alert sent successfully (attempt 1).
+2026-04-16 10:49:43,704 [INFO] Confirmed intruder after smoothing: low_prob(0.085) track=6_7
+2026-04-16 10:49:43,835 [INFO] [ALERT 1/2] Unknown person detected near the camera. Alert ID: INTRUDER_0015.
+2026-04-16 10:49:43,954 [INFO] Confirmed intruder after smoothing: low_prob(0.097) track=6_7
+2026-04-16 10:49:44,100 [INFO] Confirmed intruder after smoothing: low_prob(0.091) track=6_7
+2026-04-16 10:49:44,304 [INFO] Confirmed intruder after smoothing: low_prob(0.104) track=6_7
+2026-04-16 10:49:44,425 [INFO] Confirmed intruder after smoothing: low_prob(0.094) track=6_7
+2026-04-16 10:49:44,533 [INFO] Confirmed intruder after smoothing: low_prob(0.100) track=6_7
+2026-04-16 10:49:44,644 [INFO] Confirmed intruder after smoothing: low_prob(0.103) track=6_7
+2026-04-16 10:49:44,742 [INFO] Confirmed intruder after smoothing: low_prob(0.090) track=6_7
+2026-04-16 10:49:44,852 [INFO] Confirmed intruder after smoothing: low_prob(0.100) track=6_7
+2026-04-16 10:49:44,960 [INFO] Confirmed intruder after smoothing: low_prob(0.095) track=6_7
+2026-04-16 10:49:45,060 [INFO] Confirmed intruder after smoothing: low_prob(0.095) track=6_7
+2026-04-16 10:49:45,160 [INFO] Confirmed intruder after smoothing: low_prob(0.094) track=6_7
+2026-04-16 10:49:45,269 [INFO] Confirmed intruder after smoothing: low_prob(0.093) track=6_7
+2026-04-16 10:49:45,451 [INFO] Confirmed intruder after smoothing: low_prob(0.109) track=6_7
+2026-04-16 10:49:45,623 [INFO] Confirmed intruder after smoothing: low_prob(0.084) track=6_7
+2026-04-16 10:49:45,844 [INFO] Confirmed intruder after smoothing: low_prob(0.089) track=6_7
+2026-04-16 10:49:46,034 [INFO] Confirmed intruder after smoothing: low_prob(0.079) track=6_7
+2026-04-16 10:49:46,170 [INFO] Telegram alert sent successfully (attempt 1).
+2026-04-16 10:49:46,203 [INFO] Confirmed intruder after smoothing: low_prob(0.095) track=6_7
+2026-04-16 10:49:46,428 [INFO] Confirmed intruder after smoothing: low_prob(0.100) track=6_7
+2026-04-16 10:50:23,043 [INFO] Confirmed intruder after smoothing: low_prob(0.085) track=8_11
+2026-04-16 10:50:23,156 [INFO] [ALERT 1/2] Unknown person detected near the camera. Alert ID: INTRUDER_0066.
+2026-04-16 10:50:23,256 [INFO] Confirmed intruder after smoothing: low_prob(0.117) track=8_11
+2026-04-16 10:50:23,337 [INFO] Confirmed intruder after smoothing: low_prob(0.108) track=8_11
+2026-04-16 10:50:23,415 [INFO] Confirmed intruder after smoothing: low_prob(0.117) track=8_11
+2026-04-16 10:50:23,639 [INFO] Confirmed intruder after smoothing: low_prob(0.109) track=8_11
+2026-04-16 10:50:23,722 [INFO] Confirmed intruder after smoothing: low_prob(0.090) track=8_11
+2026-04-16 10:50:23,803 [INFO] Confirmed intruder after smoothing: low_prob(0.072) track=8_11
+2026-04-16 10:50:23,912 [INFO] Confirmed intruder after smoothing: low_prob(0.094) track=8_11
+2026-04-16 10:50:23,989 [INFO] Confirmed intruder after smoothing: low_prob(0.107) track=8_11
+2026-04-16 10:50:24,181 [INFO] Confirmed intruder after smoothing: low_prob(0.115) track=8_11
+2026-04-16 10:50:24,259 [INFO] Confirmed intruder after smoothing: low_prob(0.073) track=8_11
+2026-04-16 10:50:24,361 [INFO] Confirmed intruder after smoothing: low_prob(0.087) track=8_11
+2026-04-16 10:50:24,473 [INFO] Confirmed intruder after smoothing: low_prob(0.092) track=8_11
+2026-04-16 10:50:24,563 [INFO] Confirmed intruder after smoothing: low_prob(0.115) track=8_11
+2026-04-16 10:50:24,661 [INFO] Confirmed intruder after smoothing: low_prob(0.116) track=8_11
+2026-04-16 10:50:24,755 [INFO] Confirmed intruder after smoothing: low_prob(0.090) track=8_11
+2026-04-16 10:50:24,841 [INFO] Confirmed intruder after smoothing: low_prob(0.081) track=8_11
+2026-04-16 10:50:24,929 [INFO] Confirmed intruder after smoothing: low_prob(0.082) track=8_11
+2026-04-16 10:50:25,050 [INFO] Confirmed intruder after smoothing: low_prob(0.095) track=8_11
+2026-04-16 10:50:25,133 [INFO] Confirmed intruder after smoothing: low_prob(0.079) track=8_11
+2026-04-16 10:50:25,216 [INFO] Confirmed intruder after smoothing: low_prob(0.094) track=8_11
+2026-04-16 10:50:25,290 [INFO] Confirmed intruder after smoothing: low_prob(0.088) track=8_11
+2026-04-16 10:50:25,362 [INFO] Confirmed intruder after smoothing: low_prob(0.081) track=8_11
+2026-04-16 10:50:25,408 [INFO] Telegram alert sent successfully (attempt 1).
+2026-04-16 10:50:25,458 [INFO] Confirmed intruder after smoothing: low_prob(0.091) track=8_11
+2026-04-16 10:50:25,570 [INFO] Confirmed intruder after smoothing: low_prob(0.073) track=8_11
+2026-04-16 10:50:25,668 [INFO] Confirmed intruder after smoothing: low_prob(0.112) track=8_11
+2026-04-16 10:50:25,762 [INFO] Confirmed intruder after smoothing: low_prob(0.088) track=8_11
+2026-04-16 10:50:25,865 [INFO] Confirmed intruder after smoothing: low_prob(0.112) track=8_11
+2026-04-16 10:50:25,985 [INFO] Confirmed intruder after smoothing: low_prob(0.098) track=8_11
+2026-04-16 10:50:26,064 [INFO] Confirmed intruder after smoothing: low_prob(0.103) track=8_11
+2026-04-16 10:50:26,160 [INFO] Confirmed intruder after smoothing: low_prob(0.093) track=8_11
+2026-04-16 10:50:26,252 [INFO] Confirmed intruder after smoothing: low_prob(0.103) track=8_11
+2026-04-16 10:50:26,368 [INFO] Confirmed intruder after smoothing: low_prob(0.088) track=8_11
+2026-04-16 10:50:26,460 [INFO] Confirmed intruder after smoothing: low_prob(0.114) track=8_11
+2026-04-16 10:50:26,544 [INFO] Confirmed intruder after smoothing: low_prob(0.116) track=8_11
+2026-04-16 10:50:26,659 [INFO] Confirmed intruder after smoothing: low_prob(0.084) track=8_11
+2026-04-16 10:50:26,736 [INFO] Confirmed intruder after smoothing: low_prob(0.071) track=8_11
+2026-04-16 10:50:26,828 [INFO] Confirmed intruder after smoothing: low_prob(0.083) track=8_11
+2026-04-16 10:50:27,036 [INFO] Confirmed intruder after smoothing: low_prob(0.081) track=8_11
+2026-04-16 10:50:27,107 [INFO] Confirmed intruder after smoothing: low_prob(0.108) track=8_11
+2026-04-16 10:50:27,311 [INFO] Confirmed intruder after smoothing: low_prob(0.097) track=8_11
+2026-04-16 10:50:27,386 [INFO] Confirmed intruder after smoothing: low_prob(0.117) track=8_11
+2026-04-16 10:50:27,481 [INFO] Confirmed intruder after smoothing: low_prob(0.105) track=8_11
+2026-04-16 10:50:27,557 [INFO] Confirmed intruder after smoothing: low_prob(0.097) track=8_11
+2026-04-16 10:50:27,626 [INFO] Confirmed intruder after smoothing: low_prob(0.089) track=8_11
+2026-04-16 10:50:27,728 [INFO] Confirmed intruder after smoothing: low_prob(0.098) track=8_11
+2026-04-16 10:50:28,041 [INFO] Confirmed intruder after smoothing: low_prob(0.094) track=8_11
+2026-04-16 10:50:28,116 [INFO] Confirmed intruder after smoothing: low_prob(0.081) track=8_11
+2026-04-16 10:50:28,218 [INFO] Confirmed intruder after smoothing: low_prob(0.093) track=8_11
+2026-04-16 10:50:28,326 [INFO] Confirmed intruder after smoothing: low_prob(0.104) track=8_11
+2026-04-16 10:50:28,406 [INFO] Confirmed intruder after smoothing: low_prob(0.094) track=8_11
+2026-04-16 10:50:28,521 [INFO] Confirmed intruder after smoothing: low_prob(0.111) track=8_11
+2026-04-16 10:50:28,614 [INFO] Confirmed intruder after smoothing: low_prob(0.078) track=8_11
+2026-04-16 10:50:28,717 [INFO] Confirmed intruder after smoothing: low_prob(0.098) track=8_11
+2026-04-16 10:50:28,795 [INFO] Confirmed intruder after smoothing: low_prob(0.084) track=8_11
+2026-04-16 10:50:28,904 [INFO] Confirmed intruder after smoothing: low_prob(0.090) track=8_11
+2026-04-16 10:50:28,995 [INFO] Confirmed intruder after smoothing: low_prob(0.094) track=8_11
+2026-04-16 10:50:29,089 [INFO] Confirmed intruder after smoothing: low_prob(0.084) track=8_11
+2026-04-16 10:50:29,200 [INFO] Confirmed intruder after smoothing: low_prob(0.094) track=8_11
+2026-04-16 10:50:29,312 [INFO] Confirmed intruder after smoothing: low_prob(0.089) track=8_11
+2026-04-16 10:50:29,406 [INFO] Confirmed intruder after smoothing: low_prob(0.098) track=8_11
+2026-04-16 10:50:29,507 [INFO] Confirmed intruder after smoothing: low_prob(0.099) track=8_11
+2026-04-16 10:50:29,616 [INFO] Confirmed intruder after smoothing: low_prob(0.090) track=8_11
+2026-04-16 10:50:29,699 [INFO] Confirmed intruder after smoothing: low_prob(0.068) track=8_11
+2026-04-16 10:50:29,808 [INFO] Confirmed intruder after smoothing: low_prob(0.087) track=8_11
+2026-04-16 10:50:30,019 [INFO] Confirmed intruder after smoothing: low_prob(0.099) track=8_11
+2026-04-16 10:50:30,198 [INFO] Confirmed intruder after smoothing: low_prob(0.111) track=8_11
+2026-04-16 10:50:30,257 [INFO] Confirmed intruder after smoothing: low_prob(0.095) track=8_11
+2026-04-16 10:50:30,366 [INFO] Confirmed intruder after smoothing: low_prob(0.092) track=8_11
+2026-04-16 10:50:30,458 [INFO] Confirmed intruder after smoothing: low_prob(0.111) track=8_11
+2026-04-16 10:50:30,542 [INFO] Confirmed intruder after smoothing: low_prob(0.113) track=8_11
+2026-04-16 10:50:30,648 [INFO] Confirmed intruder after smoothing: low_prob(0.092) track=8_11
+2026-04-16 10:50:30,733 [INFO] Confirmed intruder after smoothing: low_prob(0.084) track=8_11
+2026-04-16 10:50:30,819 [INFO] Confirmed intruder after smoothing: low_prob(0.084) track=8_11
+2026-04-16 10:50:30,906 [INFO] Confirmed intruder after smoothing: low_prob(0.072) track=8_11
+2026-04-16 10:50:30,998 [INFO] Confirmed intruder after smoothing: low_prob(0.099) track=8_11
+2026-04-16 10:50:31,100 [INFO] Confirmed intruder after smoothing: low_prob(0.111) track=8_11
+2026-04-16 10:50:31,276 [INFO] Confirmed intruder after smoothing: low_prob(0.118) track=8_11
+2026-04-16 10:50:31,386 [INFO] Confirmed intruder after smoothing: low_prob(0.090) track=8_11
+2026-04-16 10:50:31,461 [INFO] Confirmed intruder after smoothing: low_prob(0.103) track=8_11
+2026-04-16 10:50:31,577 [INFO] Confirmed intruder after smoothing: low_prob(0.107) track=8_11
+2026-04-16 10:50:31,676 [INFO] Confirmed intruder after smoothing: low_prob(0.104) track=8_11
+2026-04-16 10:50:31,776 [INFO] Confirmed intruder after smoothing: low_prob(0.082) track=8_11
+2026-04-16 10:50:31,875 [INFO] Confirmed intruder after smoothing: low_prob(0.104) track=8_11
+2026-04-16 10:50:32,003 [INFO] Confirmed intruder after smoothing: low_prob(0.095) track=8_11
+2026-04-16 10:50:32,095 [INFO] Confirmed intruder after smoothing: low_prob(0.081) track=8_11
+2026-04-16 10:50:32,194 [INFO] Confirmed intruder after smoothing: low_prob(0.113) track=8_11
+2026-04-16 10:50:32,302 [INFO] Confirmed intruder after smoothing: low_prob(0.108) track=8_11
+2026-04-16 10:50:32,401 [INFO] Confirmed intruder after smoothing: low_prob(0.107) track=8_11
+2026-04-16 10:50:32,685 [INFO] Confirmed intruder after smoothing: low_prob(0.110) track=8_11
+2026-04-16 10:50:32,767 [INFO] Confirmed intruder after smoothing: low_prob(0.110) track=8_11
+2026-04-16 10:50:32,965 [INFO] Confirmed intruder after smoothing: low_prob(0.115) track=8_11
+2026-04-16 10:50:33,117 [INFO] Confirmed intruder after smoothing: low_prob(0.116) track=8_11
+2026-04-16 10:50:33,527 [INFO] Confirmed intruder after smoothing: low_prob(0.111) track=8_11
+2026-04-16 10:50:33,835 [INFO] Confirmed intruder after smoothing: low_prob(0.084) track=8_11
+2026-04-16 10:50:35,235 [INFO] DEPARTURE -> Sasidhar
+2026-04-16 10:50:38,861 [INFO] Confirmed intruder after smoothing: low_prob(0.081) track=6_8
+2026-04-16 10:50:38,985 [INFO] Confirmed intruder after smoothing: low_prob(0.080) track=6_8
+2026-04-16 10:50:39,093 [INFO] Confirmed intruder after smoothing: low_prob(0.081) track=6_8
+2026-04-16 10:50:39,225 [INFO] Confirmed intruder after smoothing: low_prob(0.083) track=6_8
+2026-04-16 10:50:39,303 [INFO] Confirmed intruder after smoothing: low_prob(0.081) track=6_8
+2026-04-16 10:50:39,412 [INFO] Confirmed intruder after smoothing: low_prob(0.079) track=6_8
+2026-04-16 10:50:39,507 [INFO] Confirmed intruder after smoothing: low_prob(0.087) track=6_8
+2026-04-16 10:50:39,606 [INFO] Confirmed intruder after smoothing: low_prob(0.082) track=6_8
+2026-04-16 10:50:39,711 [INFO] Confirmed intruder after smoothing: low_prob(0.085) track=6_8
+2026-04-16 10:50:39,869 [INFO] Confirmed intruder after smoothing: low_prob(0.069) track=6_8
+2026-04-16 10:50:39,978 [INFO] Confirmed intruder after smoothing: low_prob(0.073) track=6_8
+2026-04-16 10:50:40,075 [INFO] Confirmed intruder after smoothing: low_prob(0.066) track=6_8
+2026-04-16 10:50:40,187 [INFO] Confirmed intruder after smoothing: low_prob(0.078) track=6_8
+2026-04-16 10:50:40,297 [INFO] Confirmed intruder after smoothing: low_prob(0.075) track=6_8
+2026-04-16 10:50:40,405 [INFO] Confirmed intruder after smoothing: low_prob(0.063) track=6_8
+2026-04-16 10:50:40,525 [INFO] Confirmed intruder after smoothing: low_prob(0.082) track=6_8
+2026-04-16 10:50:40,635 [INFO] Confirmed intruder after smoothing: low_prob(0.080) track=6_8
+2026-04-16 10:50:40,763 [INFO] Confirmed intruder after smoothing: low_prob(0.088) track=6_8
+2026-04-16 10:50:40,866 [INFO] Confirmed intruder after smoothing: low_prob(0.079) track=6_8
+2026-04-16 10:50:40,986 [INFO] Confirmed intruder after smoothing: low_prob(0.064) track=6_8
+2026-04-16 10:50:41,092 [INFO] Confirmed intruder after smoothing: low_prob(0.064) track=6_8
+2026-04-16 10:50:41,205 [INFO] Confirmed intruder after smoothing: low_prob(0.066) track=6_8
+2026-04-16 10:50:41,311 [INFO] Confirmed intruder after smoothing: low_prob(0.067) track=6_8
+2026-04-16 10:50:41,423 [INFO] Confirmed intruder after smoothing: low_prob(0.071) track=6_8
+2026-04-16 10:50:41,523 [INFO] Confirmed intruder after smoothing: low_prob(0.080) track=6_8
+2026-04-16 10:50:41,619 [INFO] Confirmed intruder after smoothing: low_prob(0.079) track=6_8
+2026-04-16 10:50:41,727 [INFO] Confirmed intruder after smoothing: low_prob(0.077) track=6_8
+2026-04-16 10:50:41,836 [INFO] Confirmed intruder after smoothing: low_prob(0.073) track=6_8
+2026-04-16 10:50:41,946 [INFO] Confirmed intruder after smoothing: low_prob(0.070) track=6_8
+2026-04-16 10:50:42,060 [INFO] Confirmed intruder after smoothing: low_prob(0.075) track=6_8
+2026-04-16 10:50:42,163 [INFO] Confirmed intruder after smoothing: low_prob(0.070) track=6_8
+2026-04-16 10:50:42,262 [INFO] Confirmed intruder after smoothing: low_prob(0.075) track=6_8
+2026-04-16 10:50:42,355 [INFO] Confirmed intruder after smoothing: low_prob(0.083) track=6_8
+2026-04-16 10:50:42,489 [INFO] Confirmed intruder after smoothing: low_prob(0.081) track=6_8
+2026-04-16 10:50:42,601 [INFO] Confirmed intruder after smoothing: low_prob(0.079) track=6_8
+2026-04-16 10:50:42,730 [INFO] Confirmed intruder after smoothing: low_prob(0.087) track=6_8
+2026-04-16 10:50:42,839 [INFO] Confirmed intruder after smoothing: low_prob(0.078) track=6_8
+2026-04-16 10:50:42,934 [INFO] Confirmed intruder after smoothing: low_prob(0.066) track=6_8
+2026-04-16 10:50:43,072 [INFO] Confirmed intruder after smoothing: low_prob(0.068) track=6_8
+2026-04-16 10:50:50,256 [INFO] Confirmed intruder after smoothing: low_prob(0.090) track=2_7
+2026-04-16 10:50:50,446 [INFO] Confirmed intruder after smoothing: low_prob(0.109) track=2_7
+2026-04-16 10:50:50,565 [INFO] Confirmed intruder after smoothing: low_prob(0.106) track=2_7
+2026-04-16 10:50:50,668 [INFO] Confirmed intruder after smoothing: low_prob(0.116) track=2_7
+2026-04-16 10:50:50,834 [INFO] Confirmed intruder after smoothing: low_prob(0.115) track=2_7
+2026-04-16 10:50:50,950 [INFO] Confirmed intruder after smoothing: low_prob(0.108) track=2_7
+2026-04-16 10:50:51,044 [INFO] Confirmed intruder after smoothing: low_prob(0.104) track=2_7
+2026-04-16 10:50:51,139 [INFO] Confirmed intruder after smoothing: low_prob(0.079) track=2_7
+2026-04-16 10:50:51,248 [INFO] Confirmed intruder after smoothing: low_prob(0.081) track=2_7
+2026-04-16 10:50:51,372 [INFO] Confirmed intruder after smoothing: low_prob(0.079) track=2_7
+2026-04-16 10:50:51,481 [INFO] Confirmed intruder after smoothing: low_prob(0.102) track=2_7
+2026-04-16 10:51:23,046 [INFO] Confirmed intruder after smoothing: low_prob(0.073) track=8_11
+2026-04-16 10:51:23,157 [INFO] [ALERT 1/2] Unknown person detected near the camera. Alert ID: INTRUDER_0044.
+2026-04-16 10:51:23,237 [INFO] Confirmed intruder after smoothing: low_prob(0.099) track=8_11
+2026-04-16 10:51:23,306 [INFO] Confirmed intruder after smoothing: low_prob(0.081) track=8_11
+2026-04-16 10:51:23,397 [INFO] Confirmed intruder after smoothing: low_prob(0.080) track=8_11
+2026-04-16 10:51:23,472 [INFO] Confirmed intruder after smoothing: low_prob(0.094) track=8_11
+2026-04-16 10:51:23,557 [INFO] Confirmed intruder after smoothing: low_prob(0.084) track=8_11
+2026-04-16 10:51:23,639 [INFO] Confirmed intruder after smoothing: low_prob(0.077) track=8_11
+2026-04-16 10:51:23,750 [INFO] Confirmed intruder after smoothing: low_prob(0.080) track=8_11
+2026-04-16 10:51:23,824 [INFO] Confirmed intruder after smoothing: low_prob(0.090) track=8_11
+2026-04-16 10:51:23,923 [INFO] Confirmed intruder after smoothing: low_prob(0.080) track=8_11
+2026-04-16 10:51:24,034 [INFO] Confirmed intruder after smoothing: low_prob(0.076) track=8_11
+2026-04-16 10:51:24,115 [INFO] Confirmed intruder after smoothing: low_prob(0.069) track=8_11
+2026-04-16 10:51:24,226 [INFO] Confirmed intruder after smoothing: low_prob(0.077) track=8_11
+2026-04-16 10:51:24,311 [INFO] Confirmed intruder after smoothing: low_prob(0.080) track=8_11
+2026-04-16 10:51:24,403 [INFO] Confirmed intruder after smoothing: low_prob(0.083) track=8_11
+2026-04-16 10:51:24,496 [INFO] Confirmed intruder after smoothing: low_prob(0.076) track=8_11
+2026-04-16 10:51:24,596 [INFO] Confirmed intruder after smoothing: low_prob(0.097) track=8_11
+2026-04-16 10:51:24,701 [INFO] Confirmed intruder after smoothing: low_prob(0.076) track=8_11
+2026-04-16 10:51:24,779 [INFO] Confirmed intruder after smoothing: low_prob(0.090) track=8_11
+2026-04-16 10:51:24,856 [INFO] Confirmed intruder after smoothing: low_prob(0.117) track=8_11
+2026-04-16 10:51:24,941 [INFO] Confirmed intruder after smoothing: low_prob(0.077) track=8_11
+2026-04-16 10:51:25,016 [INFO] Confirmed intruder after smoothing: low_prob(0.071) track=8_11
+2026-04-16 10:51:25,099 [INFO] Confirmed intruder after smoothing: low_prob(0.074) track=8_11
+2026-04-16 10:51:25,190 [INFO] Confirmed intruder after smoothing: low_prob(0.080) track=8_11
+2026-04-16 10:51:25,190 [INFO] Telegram alert sent successfully (attempt 1).
+2026-04-16 10:51:25,423 [INFO] Confirmed intruder after smoothing: low_prob(0.102) track=8_11
+2026-04-16 10:51:25,507 [INFO] Confirmed intruder after smoothing: low_prob(0.114) track=8_11
+2026-04-16 10:51:25,595 [INFO] Confirmed intruder after smoothing: low_prob(0.101) track=8_11
+2026-04-16 10:51:25,954 [INFO] Confirmed intruder after smoothing: low_prob(0.095) track=8_11
+2026-04-16 10:51:26,150 [INFO] Confirmed intruder after smoothing: low_prob(0.113) track=8_11
+2026-04-16 10:51:26,321 [INFO] Confirmed intruder after smoothing: low_prob(0.108) track=8_11
+2026-04-16 10:51:26,434 [INFO] Confirmed intruder after smoothing: low_prob(0.083) track=8_11
+2026-04-16 10:51:26,520 [INFO] Confirmed intruder after smoothing: low_prob(0.072) track=8_11
+2026-04-16 10:51:26,618 [INFO] Confirmed intruder after smoothing: low_prob(0.075) track=8_11
+2026-04-16 10:51:26,714 [INFO] Confirmed intruder after smoothing: low_prob(0.119) track=8_11
+2026-04-16 10:51:26,889 [INFO] Confirmed intruder after smoothing: low_prob(0.088) track=8_11
+2026-04-16 10:51:27,025 [INFO] Confirmed intruder after smoothing: low_prob(0.115) track=8_11
+2026-04-16 10:51:27,181 [INFO] Confirmed intruder after smoothing: low_prob(0.101) track=8_11
+2026-04-16 10:51:27,341 [INFO] Confirmed intruder after smoothing: low_prob(0.078) track=8_11
+2026-04-16 10:51:27,530 [INFO] Confirmed intruder after smoothing: low_prob(0.118) track=8_11
+2026-04-16 10:51:27,606 [INFO] Confirmed intruder after smoothing: low_prob(0.107) track=8_11
+2026-04-16 10:51:27,741 [INFO] Confirmed intruder after smoothing: low_prob(0.116) track=8_11
+2026-04-16 10:51:28,079 [INFO] Confirmed intruder after smoothing: low_prob(0.115) track=8_11
+2026-04-16 10:51:28,190 [INFO] Confirmed intruder after smoothing: low_prob(0.118) track=8_11
+2026-04-16 10:51:28,297 [INFO] Confirmed intruder after smoothing: low_prob(0.116) track=8_11
+2026-04-16 10:51:28,374 [INFO] Confirmed intruder after smoothing: low_prob(0.109) track=8_11
+2026-04-16 10:51:28,684 [INFO] Confirmed intruder after smoothing: low_prob(0.120) track=8_11
+2026-04-16 10:51:28,781 [INFO] Confirmed intruder after smoothing: low_prob(0.086) track=8_11
+2026-04-16 10:51:28,883 [INFO] Confirmed intruder after smoothing: low_prob(0.108) track=8_11
+2026-04-16 10:51:28,967 [INFO] Confirmed intruder after smoothing: low_prob(0.099) track=8_11
+2026-04-16 10:51:29,061 [INFO] Confirmed intruder after smoothing: low_prob(0.096) track=8_11
+2026-04-16 10:51:29,169 [INFO] Confirmed intruder after smoothing: low_prob(0.115) track=8_11
+2026-04-16 10:51:29,265 [INFO] Confirmed intruder after smoothing: low_prob(0.104) track=8_11
+2026-04-16 10:51:29,448 [INFO] Confirmed intruder after smoothing: low_prob(0.099) track=8_11
+2026-04-16 10:51:29,530 [INFO] Confirmed intruder after smoothing: low_prob(0.095) track=8_11
+2026-04-16 10:51:29,697 [INFO] Confirmed intruder after smoothing: low_prob(0.102) track=8_11
+2026-04-16 10:52:17,156 [INFO] ARRIVAL  -> Sasidhar
+2026-04-16 10:52:21,490 [INFO] Confirmed intruder after smoothing: low_prob(0.120) track=6_5
+2026-04-16 10:52:23,632 [INFO] Confirmed intruder after smoothing: low_prob(0.095) track=6_5
+2026-04-16 10:52:32,463 [INFO] Confirmed intruder after smoothing: low_prob(0.120) track=7_4
+2026-04-16 10:52:33,915 [INFO] Confirmed intruder after smoothing: low_prob(0.119) track=7_4
+2026-04-16 10:52:34,104 [INFO] Confirmed intruder after smoothing: low_prob(0.116) track=7_4
+2026-04-16 10:52:34,281 [INFO] Confirmed intruder after smoothing: low_prob(0.113) track=7_4
+2026-04-16 10:52:34,461 [INFO] Confirmed intruder after smoothing: low_prob(0.085) track=7_4
+2026-04-16 10:52:59,156 [INFO] Confirmed intruder after smoothing: low_prob(0.117) track=1_7
+2026-04-16 10:53:00,759 [INFO] Confirmed intruder after smoothing: low_prob(0.118) track=1_7
+2026-04-16 10:53:01,101 [INFO] Confirmed intruder after smoothing: low_prob(0.117) track=1_7
+2026-04-16 10:53:01,680 [INFO] Confirmed intruder after smoothing: low_prob(0.090) track=1_7
+2026-04-16 10:53:01,999 [INFO] Confirmed intruder after smoothing: low_prob(0.100) track=1_7
+2026-04-16 10:53:02,657 [INFO] Confirmed intruder after smoothing: low_prob(0.081) track=1_7
+2026-04-16 10:53:03,003 [INFO] [ALERT 1/2] Unknown person detected near the camera. Alert ID: INTRUDER_0011.
+2026-04-16 10:53:03,143 [INFO] Confirmed intruder after smoothing: low_prob(0.092) track=1_7
+2026-04-16 10:53:03,448 [INFO] Confirmed intruder after smoothing: low_prob(0.084) track=1_7
+2026-04-16 10:53:03,635 [INFO] Confirmed intruder after smoothing: low_prob(0.090) track=1_7
+2026-04-16 10:53:03,851 [INFO] Confirmed intruder after smoothing: low_prob(0.090) track=1_7
+2026-04-16 10:53:04,456 [INFO] Confirmed intruder after smoothing: low_prob(0.091) track=1_7
+2026-04-16 10:53:05,026 [INFO] Telegram alert sent successfully (attempt 1).
+2026-04-16 10:53:10,303 [INFO] Confirmed intruder after smoothing: low_prob(0.054) track=4_7
+2026-04-16 10:53:10,423 [INFO] [ALERT 1/2] Unknown person detected near the camera. Alert ID: INTRUDER_0007.
+2026-04-16 10:53:10,801 [INFO] Confirmed intruder after smoothing: low_prob(0.088) track=4_7
+2026-04-16 10:53:11,116 [INFO] Confirmed intruder after smoothing: low_prob(0.067) track=4_7
+2026-04-16 10:53:11,399 [INFO] Confirmed intruder after smoothing: low_prob(0.117) track=2_8
+2026-04-16 10:53:11,512 [INFO] [ALERT 1/2] Unknown person detected near the camera. Alert ID: INTRUDER_0024.
+2026-04-16 10:53:12,100 [INFO] Confirmed intruder after smoothing: low_prob(0.083) track=1_7
+2026-04-16 10:53:12,378 [INFO] Confirmed intruder after smoothing: low_prob(0.072) track=1_7
+2026-04-16 10:53:12,538 [INFO] Telegram alert sent successfully (attempt 1).
+2026-04-16 10:53:12,664 [INFO] Confirmed intruder after smoothing: low_prob(0.072) track=1_7
+2026-04-16 10:53:12,874 [INFO] Confirmed intruder after smoothing: low_prob(0.067) track=1_7
+2026-04-16 10:53:13,571 [INFO] Telegram alert sent successfully (attempt 1).
+2026-04-16 10:53:19,383 [INFO] [ALERT 1/2] Unknown person detected near the camera. Alert ID: INTRUDER_0002.
+2026-04-16 10:53:20,486 [INFO] Confirmed intruder after smoothing: low_prob(0.111) track=15_1
+2026-04-16 10:53:21,008 [INFO] Confirmed intruder after smoothing: low_prob(0.081) track=15_1
+2026-04-16 10:53:21,981 [INFO] Confirmed intruder after smoothing: low_prob(0.056) track=1_6
+2026-04-16 10:53:22,152 [INFO] Confirmed intruder after smoothing: low_prob(0.073) track=1_6
+2026-04-16 10:53:22,554 [INFO] Confirmed intruder after smoothing: low_prob(0.071) track=1_6
+2026-04-16 10:53:22,766 [INFO] Confirmed intruder after smoothing: low_prob(0.089) track=1_6
+2026-04-16 10:53:22,965 [INFO] Confirmed intruder after smoothing: low_prob(0.094) track=1_6
+2026-04-16 10:53:23,177 [INFO] Confirmed intruder after smoothing: low_prob(0.117) track=1_6
+2026-04-16 10:53:31,140 [INFO] Telegram alert sent successfully (attempt 1).
+2026-04-16 10:53:31,313 [INFO] Confirmed intruder after smoothing: low_prob(0.084) track=0_11
+2026-04-16 10:53:31,704 [INFO] Confirmed intruder after smoothing: low_prob(0.056) track=0_11
+2026-04-16 10:53:31,917 [INFO] Confirmed intruder after smoothing: low_prob(0.099) track=0_11
+2026-04-16 10:53:32,117 [INFO] Confirmed intruder after smoothing: low_prob(0.085) track=0_11
+2026-04-16 10:53:32,407 [INFO] Confirmed intruder after smoothing: low_prob(0.066) track=0_11
+2026-04-16 10:53:32,584 [INFO] Confirmed intruder after smoothing: low_prob(0.095) track=0_11
+2026-04-16 10:53:40,508 [INFO] ARRIVAL  -> Mohan
+2026-04-16 10:53:43,420 [INFO] ARRIVAL  -> Sasidhar
+2026-04-16 10:53:45,991 [INFO] [ALERT 1/2] Unknown person detected near the camera. Alert ID: INTRUDER_0105.
+2026-04-16 10:53:47,116 [INFO] Confirmed intruder after smoothing: low_prob(0.120) track=6_6
+2026-04-16 10:53:47,767 [INFO] Telegram alert sent successfully (attempt 1).
+2026-04-16 10:53:52,029 [INFO] ARRIVAL  -> Sasidhar
+2026-04-16 10:54:00,381 [INFO] Confirmed intruder after smoothing: low_prob(0.103) track=1_11
+2026-04-16 10:54:00,443 [INFO] Confirmed intruder after smoothing: low_prob(0.108) track=1_11
+2026-04-16 10:54:00,615 [INFO] Confirmed intruder after smoothing: low_prob(0.116) track=1_11
+2026-04-16 10:54:00,691 [INFO] Confirmed intruder after smoothing: low_prob(0.097) track=1_11
+2026-04-16 10:54:00,787 [INFO] Confirmed intruder after smoothing: low_prob(0.088) track=1_11
+2026-04-16 10:54:01,646 [INFO] Confirmed intruder after smoothing: low_prob(0.110) track=1_11
+2026-04-16 10:54:07,924 [INFO] Confirmed intruder after smoothing: low_prob(0.115) track=1_11
+2026-04-16 10:54:12,515 [INFO] DEPARTURE -> Bhanu
+2026-04-16 10:54:13,753 [INFO] [ALERT 1/2] Unknown person detected near the camera. Alert ID: INTRUDER_0045.
+2026-04-16 10:54:13,925 [INFO] Confirmed intruder after smoothing: low_prob(0.109) track=1_11
+2026-04-16 10:54:16,092 [INFO] Telegram alert sent successfully (attempt 1).
+2026-04-16 10:54:18,719 [INFO] Confirmed intruder after smoothing: low_prob(0.117) track=1_11
+2026-04-16 10:54:18,821 [INFO] Confirmed intruder after smoothing: low_prob(0.096) track=1_11
+2026-04-16 10:54:18,949 [INFO] Confirmed intruder after smoothing: low_prob(0.108) track=1_11
+2026-04-16 10:54:19,184 [INFO] Confirmed intruder after smoothing: low_prob(0.105) track=1_11
+2026-04-16 10:54:30,513 [INFO] [ALERT 1/2] Unknown person detected near the camera. Alert ID: INTRUDER_0032.
+2026-04-16 10:54:30,607 [INFO] Confirmed intruder after smoothing: low_prob(0.114) track=1_11
+2026-04-16 10:54:32,377 [INFO] Telegram alert sent successfully (attempt 1).
+2026-04-16 10:54:41,637 [INFO] DEPARTURE -> Mohan
+2026-04-16 10:54:46,640 [INFO] DEPARTURE -> Sasidhar
+2026-04-16 10:54:47,670 [INFO] ARRIVAL  -> Sasidhar
+2026-04-16 10:54:52,158 [INFO] DEPARTURE -> Sasidhar
+2026-04-16 10:54:53,073 [INFO] ARRIVAL  -> Sasidhar
+2026-04-16 10:55:28,235 [INFO] ARRIVAL  -> Mohan
+2026-04-16 10:55:42,425 [INFO] ARRIVAL  -> Mohan
+2026-04-16 10:55:47,435 [INFO] ARRIVAL  -> Mohan
+2026-04-16 10:55:48,132 [INFO] DEPARTURE -> Sasidhar
+2026-04-16 10:55:53,622 [INFO] DEPARTURE -> Sasidhar
+2026-04-16 10:55:59,621 [INFO] Confirmed intruder after smoothing: low_prob(0.081) track=5_4
+2026-04-16 10:55:59,736 [INFO] [ALERT 2/2] Unknown person is still visible near the camera. Alert ID: INTRUDER_0015.
+2026-04-16 10:55:59,895 [INFO] Confirmed intruder after smoothing: low_prob(0.082) track=5_4
+2026-04-16 10:56:00,055 [INFO] Confirmed intruder after smoothing: low_prob(0.094) track=5_4
+2026-04-16 10:56:00,217 [INFO] Confirmed intruder after smoothing: low_prob(0.075) track=5_4
+2026-04-16 10:56:00,384 [INFO] Confirmed intruder after smoothing: low_prob(0.102) track=5_4
+2026-04-16 10:56:00,479 [INFO] Confirmed intruder after smoothing: low_prob(0.107) track=5_4
+2026-04-16 10:56:00,565 [INFO] Confirmed intruder after smoothing: low_prob(0.084) track=5_4
+2026-04-16 10:56:00,652 [INFO] Confirmed intruder after smoothing: low_prob(0.073) track=5_4
+2026-04-16 10:56:00,748 [INFO] Confirmed intruder after smoothing: low_prob(0.076) track=5_4
+2026-04-16 10:56:00,915 [INFO] Confirmed intruder after smoothing: low_prob(0.088) track=5_4
+2026-04-16 10:56:01,605 [INFO] Telegram alert sent successfully (attempt 1).
+2026-04-16 10:56:38,290 [INFO] DEPARTURE -> Mohan
+2026-04-16 10:56:40,534 [INFO] ARRIVAL  -> Mohan
+2026-04-16 10:56:43,254 [INFO] DEPARTURE -> Mohan
+2026-04-16 10:56:47,944 [INFO] Confirmed intruder after smoothing: low_prob(0.108) track=5_3
+2026-04-16 10:56:48,051 [INFO] [ALERT 1/2] Unknown person detected near the camera. Alert ID: INTRUDER_0108.
+2026-04-16 10:56:48,244 [INFO] Confirmed intruder after smoothing: low_prob(0.119) track=5_3
+2026-04-16 10:56:48,669 [INFO] Confirmed intruder after smoothing: low_prob(0.103) track=5_3
+2026-04-16 10:56:48,848 [INFO] Confirmed intruder after smoothing: low_prob(0.103) track=14_1
+2026-04-16 10:56:48,964 [INFO] [ALERT 1/2] Unknown person detected near the camera. Alert ID: INTRUDER_0028.
+2026-04-16 10:56:49,010 [INFO] Confirmed intruder after smoothing: low_prob(0.091) track=5_3
+2026-04-16 10:56:49,289 [INFO] DEPARTURE -> Mohan
+2026-04-16 10:56:51,044 [INFO] Telegram alert sent successfully (attempt 1).
+2026-04-16 10:56:51,252 [INFO] Telegram alert sent successfully (attempt 1).
+2026-04-16 10:56:57,639 [INFO] ARRIVAL  -> C.SRAVANI
+2026-04-16 10:57:01,401 [INFO] ARRIVAL  -> Mohan
+2026-04-16 10:57:29,569 [INFO] Confirmed intruder after smoothing: low_prob(0.100) track=7_4
+2026-04-16 10:57:29,857 [INFO] Confirmed intruder after smoothing: low_prob(0.094) track=7_4
+2026-04-16 10:57:30,491 [INFO] Confirmed intruder after smoothing: low_prob(0.100) track=7_4
+2026-04-16 10:57:44,896 [INFO] ARRIVAL  -> Sasidhar
+2026-04-16 10:57:45,776 [INFO] Confirmed intruder after smoothing: low_prob(0.070) track=7_9
+2026-04-16 10:57:46,073 [INFO] Confirmed intruder after smoothing: low_prob(0.073) track=7_9
+2026-04-16 10:57:46,332 [INFO] Confirmed intruder after smoothing: low_prob(0.071) track=7_9
+2026-04-16 10:57:46,576 [INFO] Confirmed intruder after smoothing: low_prob(0.079) track=7_9
+2026-04-16 10:57:46,810 [INFO] Confirmed intruder after smoothing: low_prob(0.090) track=7_9
+2026-04-16 10:57:47,036 [INFO] Confirmed intruder after smoothing: low_prob(0.073) track=7_9
+2026-04-16 10:57:47,277 [INFO] Confirmed intruder after smoothing: low_prob(0.086) track=7_9
+2026-04-16 10:57:47,719 [INFO] Confirmed intruder after smoothing: low_prob(0.105) track=7_9
+2026-04-16 10:57:53,320 [INFO] Confirmed intruder after smoothing: low_prob(0.100) track=1_6
+2026-04-16 10:57:53,443 [INFO] [ALERT 2/2] Unknown person is still visible near the camera. Alert ID: INTRUDER_0066.
+2026-04-16 10:57:53,745 [INFO] Confirmed intruder after smoothing: low_prob(0.099) track=1_6
+2026-04-16 10:57:54,001 [INFO] Confirmed intruder after smoothing: low_prob(0.100) track=1_6
+2026-04-16 10:57:54,229 [INFO] Confirmed intruder after smoothing: low_prob(0.075) track=1_6
+2026-04-16 10:57:54,452 [INFO] Confirmed intruder after smoothing: low_prob(0.118) track=1_6
+2026-04-16 10:57:54,994 [INFO] Telegram alert sent successfully (attempt 1).
+2026-04-16 10:57:55,546 [INFO] Confirmed intruder after smoothing: low_prob(0.120) track=1_6
+2026-04-16 10:57:55,771 [INFO] Confirmed intruder after smoothing: low_prob(0.115) track=1_6
+2026-04-16 10:57:56,400 [INFO] Confirmed intruder after smoothing: low_prob(0.105) track=1_6
+2026-04-16 10:57:56,819 [INFO] Confirmed intruder after smoothing: low_prob(0.112) track=1_6
+2026-04-16 10:57:57,015 [INFO] Confirmed intruder after smoothing: low_prob(0.089) track=1_6
+2026-04-16 10:57:57,238 [INFO] Confirmed intruder after smoothing: low_prob(0.091) track=1_6
+2026-04-16 10:57:57,442 [INFO] Confirmed intruder after smoothing: low_prob(0.089) track=1_6
+2026-04-16 10:57:57,641 [INFO] Confirmed intruder after smoothing: low_prob(0.109) track=1_6
+2026-04-16 10:57:57,849 [INFO] Confirmed intruder after smoothing: low_prob(0.097) track=1_6
+2026-04-16 10:57:58,110 [INFO] Confirmed intruder after smoothing: low_prob(0.112) track=1_6
+2026-04-16 10:57:58,577 [INFO] Confirmed intruder after smoothing: low_prob(0.091) track=1_6
+2026-04-16 10:57:58,785 [INFO] Confirmed intruder after smoothing: low_prob(0.089) track=1_6
+2026-04-16 10:57:59,399 [INFO] Confirmed intruder after smoothing: low_prob(0.096) track=1_6
+2026-04-16 10:57:59,528 [INFO] Confirmed intruder after smoothing: low_prob(0.112) track=1_6
+2026-04-16 10:57:59,965 [INFO] Confirmed intruder after smoothing: low_prob(0.090) track=1_6
+2026-04-16 10:58:00,763 [INFO] Confirmed intruder after smoothing: low_prob(0.094) track=1_6
+2026-04-16 10:58:01,014 [INFO] DEPARTURE -> C.SRAVANI
+2026-04-16 10:58:01,110 [INFO] Confirmed intruder after smoothing: low_prob(0.115) track=7_5
+2026-04-16 10:58:01,223 [INFO] [ALERT 1/2] Unknown person detected near the camera. Alert ID: INTRUDER_0107.
+2026-04-16 10:58:01,470 [INFO] Confirmed intruder after smoothing: low_prob(0.086) track=7_5
+2026-04-16 10:58:01,977 [INFO] Confirmed intruder after smoothing: low_prob(0.065) track=7_5
+2026-04-16 10:58:02,084 [INFO] Confirmed intruder after smoothing: low_prob(0.097) track=1_6
+2026-04-16 10:58:02,086 [INFO] DEPARTURE -> Mohan
+2026-04-16 10:58:02,203 [INFO] Confirmed intruder after smoothing: low_prob(0.072) track=7_5
+2026-04-16 10:58:02,320 [INFO] Confirmed intruder after smoothing: low_prob(0.115) track=1_6
+2026-04-16 10:58:02,461 [INFO] Confirmed intruder after smoothing: low_prob(0.063) track=1_6
+2026-04-16 10:58:02,668 [INFO] Confirmed intruder after smoothing: low_prob(0.073) track=1_6
+2026-04-16 10:58:02,735 [INFO] Telegram alert sent successfully (attempt 1).
+2026-04-16 10:58:02,959 [INFO] Confirmed intruder after smoothing: low_prob(0.081) track=1_6
+2026-04-16 10:58:03,181 [INFO] Confirmed intruder after smoothing: low_prob(0.074) track=1_6
+2026-04-16 10:58:03,534 [INFO] Confirmed intruder after smoothing: low_prob(0.105) track=1_6
+2026-04-16 10:58:04,099 [INFO] Confirmed intruder after smoothing: low_prob(0.105) track=1_6
+2026-04-16 10:58:11,812 [INFO] [ALERT 2/2] Unknown person is still visible near the camera. Alert ID: INTRUDER_0007.
+2026-04-16 10:58:12,478 [INFO] Confirmed intruder after smoothing: low_prob(0.085) track=7_5
+2026-04-16 10:58:12,660 [INFO] Confirmed intruder after smoothing: low_prob(0.089) track=7_5
+2026-04-16 10:58:13,505 [INFO] Telegram alert sent successfully (attempt 1).
+2026-04-16 10:58:13,542 [INFO] [ALERT 2/2] Unknown person is still visible near the camera. Alert ID: INTRUDER_0033.
+2026-04-16 10:58:13,682 [INFO] Confirmed intruder after smoothing: low_prob(0.080) track=1_6
+2026-04-16 10:58:13,818 [INFO] Confirmed intruder after smoothing: low_prob(0.071) track=1_6
+2026-04-16 10:58:13,964 [INFO] Confirmed intruder after smoothing: low_prob(0.094) track=1_6
+2026-04-16 10:58:14,093 [INFO] Confirmed intruder after smoothing: low_prob(0.111) track=1_6
+2026-04-16 10:58:14,237 [INFO] Confirmed intruder after smoothing: low_prob(0.110) track=1_6
+2026-04-16 10:58:14,432 [INFO] Confirmed intruder after smoothing: low_prob(0.100) track=1_6
+2026-04-16 10:58:14,659 [INFO] Confirmed intruder after smoothing: low_prob(0.093) track=1_6
+2026-04-16 10:58:14,849 [INFO] Confirmed intruder after smoothing: low_prob(0.090) track=1_6
+2026-04-16 10:58:15,043 [INFO] Confirmed intruder after smoothing: low_prob(0.108) track=1_6
+2026-04-16 10:58:15,100 [INFO] Telegram alert sent successfully (attempt 1).
+2026-04-16 10:58:15,194 [INFO] Confirmed intruder after smoothing: low_prob(0.103) track=1_6
+2026-04-16 10:58:15,515 [INFO] Confirmed intruder after smoothing: low_prob(0.099) track=1_6
+2026-04-16 10:58:43,083 [INFO] DEPARTURE -> Mohan
+2026-04-16 10:58:46,958 [INFO] DEPARTURE -> Sasidhar
+2026-04-16 10:58:59,224 [INFO] ARRIVAL  -> Sasidhar
+2026-04-16 10:59:11,439 [INFO] Confirmed intruder after smoothing: low_prob(0.082) track=1_6
+2026-04-16 10:59:11,553 [INFO] [ALERT 1/2] Unknown person detected near the camera. Alert ID: INTRUDER_0094.
+2026-04-16 10:59:11,642 [INFO] Confirmed intruder after smoothing: low_prob(0.088) track=1_6
+2026-04-16 10:59:11,837 [INFO] Confirmed intruder after smoothing: low_prob(0.118) track=1_6
+2026-04-16 10:59:11,986 [INFO] Confirmed intruder after smoothing: low_prob(0.074) track=1_6
+2026-04-16 10:59:12,172 [INFO] Confirmed intruder after smoothing: low_prob(0.086) track=1_6
+2026-04-16 10:59:12,439 [INFO] Confirmed intruder after smoothing: low_prob(0.100) track=1_6
+2026-04-16 10:59:12,606 [INFO] Confirmed intruder after smoothing: low_prob(0.093) track=1_6
+2026-04-16 10:59:12,682 [INFO] Confirmed intruder after smoothing: low_prob(0.110) track=1_6
+2026-04-16 10:59:12,781 [INFO] Confirmed intruder after smoothing: low_prob(0.094) track=1_6
+2026-04-16 10:59:12,857 [INFO] Confirmed intruder after smoothing: low_prob(0.105) track=1_6
+2026-04-16 10:59:13,011 [INFO] Confirmed intruder after smoothing: low_prob(0.090) track=1_6
+2026-04-16 10:59:13,110 [INFO] Confirmed intruder after smoothing: low_prob(0.084) track=1_6
+2026-04-16 10:59:13,185 [INFO] Confirmed intruder after smoothing: low_prob(0.097) track=1_6
+2026-04-16 10:59:13,279 [INFO] Confirmed intruder after smoothing: low_prob(0.108) track=1_6
+2026-04-16 10:59:13,389 [INFO] Confirmed intruder after smoothing: low_prob(0.069) track=1_6
+2026-04-16 10:59:13,391 [INFO] Telegram alert sent successfully (attempt 1).
+2026-04-16 10:59:13,501 [INFO] Confirmed intruder after smoothing: low_prob(0.093) track=1_6
+2026-04-16 10:59:13,613 [INFO] Confirmed intruder after smoothing: low_prob(0.103) track=1_6
+2026-04-16 10:59:13,882 [INFO] Confirmed intruder after smoothing: low_prob(0.111) track=1_6
+2026-04-16 10:59:14,060 [INFO] Confirmed intruder after smoothing: low_prob(0.107) track=1_6
+2026-04-16 10:59:14,222 [INFO] Confirmed intruder after smoothing: low_prob(0.109) track=1_6
+2026-04-16 10:59:14,314 [INFO] Confirmed intruder after smoothing: low_prob(0.105) track=1_6
+2026-04-16 10:59:14,993 [INFO] Confirmed intruder after smoothing: low_prob(0.107) track=1_6
+2026-04-16 10:59:15,272 [INFO] Confirmed intruder after smoothing: low_prob(0.104) track=1_6
+2026-04-16 10:59:15,567 [INFO] Confirmed intruder after smoothing: low_prob(0.117) track=1_6
+2026-04-16 10:59:15,640 [INFO] Confirmed intruder after smoothing: low_prob(0.094) track=1_6
+2026-04-16 10:59:15,731 [INFO] Confirmed intruder after smoothing: low_prob(0.063) track=1_6
+2026-04-16 10:59:15,902 [INFO] Confirmed intruder after smoothing: low_prob(0.088) track=1_6
+2026-04-16 10:59:15,993 [INFO] Confirmed intruder after smoothing: low_prob(0.092) track=1_6
+2026-04-16 10:59:16,079 [INFO] Confirmed intruder after smoothing: low_prob(0.086) track=1_6
+2026-04-16 10:59:16,181 [INFO] Confirmed intruder after smoothing: low_prob(0.079) track=1_6
+2026-04-16 10:59:16,273 [INFO] Confirmed intruder after smoothing: low_prob(0.113) track=1_6
+2026-04-16 10:59:16,566 [INFO] Confirmed intruder after smoothing: low_prob(0.083) track=1_6
+2026-04-16 10:59:16,775 [INFO] Confirmed intruder after smoothing: low_prob(0.101) track=1_6
+2026-04-16 10:59:16,933 [INFO] Confirmed intruder after smoothing: low_prob(0.075) track=1_6
+2026-04-16 10:59:17,055 [INFO] Confirmed intruder after smoothing: low_prob(0.109) track=1_6
+2026-04-16 10:59:17,156 [INFO] Confirmed intruder after smoothing: low_prob(0.110) track=1_6
+2026-04-16 10:59:17,272 [INFO] Confirmed intruder after smoothing: low_prob(0.092) track=1_6
+2026-04-16 10:59:17,610 [INFO] Confirmed intruder after smoothing: low_prob(0.101) track=1_6
+2026-04-16 10:59:18,097 [INFO] Confirmed intruder after smoothing: low_prob(0.107) track=1_6
+2026-04-16 10:59:18,507 [INFO] Confirmed intruder after smoothing: low_prob(0.078) track=1_6
+2026-04-16 10:59:18,610 [INFO] Confirmed intruder after smoothing: low_prob(0.115) track=1_6
+2026-04-16 10:59:18,969 [INFO] Confirmed intruder after smoothing: low_prob(0.082) track=1_6
+2026-04-16 10:59:19,064 [INFO] Confirmed intruder after smoothing: low_prob(0.096) track=1_6
+2026-04-16 10:59:30,943 [INFO] Confirmed intruder after smoothing: low_prob(0.109) track=1_6
+2026-04-16 10:59:31,136 [INFO] Confirmed intruder after smoothing: low_prob(0.089) track=1_6
+2026-04-16 10:59:31,211 [INFO] Confirmed intruder after smoothing: low_prob(0.070) track=1_6
+2026-04-16 10:59:31,641 [INFO] Confirmed intruder after smoothing: low_prob(0.114) track=1_6
+2026-04-16 10:59:31,865 [INFO] Confirmed intruder after smoothing: low_prob(0.078) track=1_6
+2026-04-16 10:59:32,005 [INFO] Confirmed intruder after smoothing: low_prob(0.081) track=1_6
+2026-04-16 10:59:32,109 [INFO] Confirmed intruder after smoothing: low_prob(0.078) track=1_6
+2026-04-16 10:59:32,234 [INFO] Confirmed intruder after smoothing: low_prob(0.069) track=1_6
+2026-04-16 10:59:32,336 [INFO] Confirmed intruder after smoothing: low_prob(0.068) track=1_6
+2026-04-16 10:59:32,421 [INFO] Confirmed intruder after smoothing: low_prob(0.062) track=1_6
+2026-04-16 10:59:32,763 [INFO] Confirmed intruder after smoothing: low_prob(0.100) track=1_6
+2026-04-16 10:59:33,006 [INFO] Confirmed intruder after smoothing: low_prob(0.108) track=1_6
+2026-04-16 10:59:33,114 [INFO] Confirmed intruder after smoothing: low_prob(0.111) track=1_6
+2026-04-16 10:59:33,344 [INFO] Confirmed intruder after smoothing: low_prob(0.112) track=1_6
+2026-04-16 10:59:43,547 [INFO] Confirmed intruder after smoothing: low_prob(0.089) track=1_6
+2026-04-16 10:59:43,653 [INFO] Confirmed intruder after smoothing: low_prob(0.119) track=1_6
+2026-04-16 10:59:43,812 [INFO] Confirmed intruder after smoothing: low_prob(0.095) track=1_6
+2026-04-16 10:59:49,557 [INFO] ARRIVAL  -> Sasidhar
+2026-04-16 10:59:54,964 [INFO] Confirmed intruder after smoothing: low_prob(0.091) track=0_6
+2026-04-16 10:59:55,078 [INFO] [ALERT 1/2] Unknown person detected near the camera. Alert ID: INTRUDER_0067.
+2026-04-16 10:59:55,288 [INFO] Confirmed intruder after smoothing: low_prob(0.084) track=0_6
+2026-04-16 10:59:55,492 [INFO] Confirmed intruder after smoothing: low_prob(0.082) track=0_6
+2026-04-16 10:59:55,742 [INFO] Confirmed intruder after smoothing: low_prob(0.100) track=0_6
+2026-04-16 10:59:55,946 [INFO] Confirmed intruder after smoothing: low_prob(0.103) track=0_6
+2026-04-16 10:59:56,151 [INFO] Confirmed intruder after smoothing: low_prob(0.076) track=0_6
+2026-04-16 10:59:56,354 [INFO] Confirmed intruder after smoothing: low_prob(0.088) track=0_6
+2026-04-16 10:59:56,588 [INFO] Confirmed intruder after smoothing: low_prob(0.114) track=0_6
+2026-04-16 10:59:56,758 [INFO] Confirmed intruder after smoothing: low_prob(0.092) track=0_6
+2026-04-16 10:59:56,779 [INFO] Telegram alert sent successfully (attempt 1).
+2026-04-16 10:59:56,997 [INFO] Confirmed intruder after smoothing: low_prob(0.116) track=0_6
+2026-04-16 10:59:57,887 [INFO] Confirmed intruder after smoothing: low_prob(0.090) track=0_6
+2026-04-16 10:59:58,115 [INFO] Confirmed intruder after smoothing: low_prob(0.064) track=0_6
+2026-04-16 10:59:58,795 [INFO] Confirmed intruder after smoothing: low_prob(0.065) track=0_6
+2026-04-16 11:00:00,085 [INFO] DEPARTURE -> Sasidhar
+2026-04-16 11:00:07,598 [INFO] [ALERT 1/2] Unknown person detected near the camera. Alert ID: INTRUDER_0081.
+2026-04-16 11:00:07,887 [INFO] Confirmed intruder after smoothing: low_prob(0.090) track=1_6
+2026-04-16 11:00:09,276 [INFO] Telegram alert sent successfully (attempt 1).
+2026-04-16 11:00:18,952 [INFO] [ALERT 2/2] Unknown person is still visible near the camera. Alert ID: INTRUDER_0002.
+2026-04-16 11:00:19,667 [INFO] Confirmed intruder after smoothing: low_prob(0.110) track=1_6
+2026-04-16 11:00:20,463 [INFO] Confirmed intruder after smoothing: low_prob(0.108) track=1_6
+2026-04-16 11:00:20,664 [INFO] Confirmed intruder after smoothing: low_prob(0.075) track=0_6
+2026-04-16 11:00:20,777 [INFO] [ALERT 1/2] Unknown person detected near the camera. Alert ID: INTRUDER_0109.
+2026-04-16 11:00:20,813 [INFO] Confirmed intruder after smoothing: low_prob(0.092) track=1_6
+2026-04-16 11:00:20,967 [INFO] Telegram alert sent successfully (attempt 1).
+2026-04-16 11:00:22,599 [INFO] Telegram alert sent successfully (attempt 1).
+2026-04-16 11:00:27,006 [INFO] Received stop signal: SIGINT
+2026-04-16 11:00:27,008 [INFO] Interrupted by user.
+2026-04-16 11:00:27,011 [INFO] Shutdown started (main_loop_exit) at 2026-04-16T11:00:27
+2026-04-16 11:00:27,409 [INFO] Shutdown complete.
