@@ -1,0 +1,71 @@
+Real-Time Data Analysis
+=======================
+Detection log: logs\test_runs\unlabeled_20260409_104834\detection_log_unlabeled_20260409_104834.csv
+Performance log: logs\test_runs\unlabeled_20260409_104834\performance_log_unlabeled_20260409_104834.csv
+Frame log: logs\test_runs\unlabeled_20260409_104834\frame_log_unlabeled_20260409_104834.csv
+Detection rows: 2513
+Performance rows: 542
+Frame rows: 5000
+Average confidence: 0.0971
+Minimum confidence: 0.0453
+Maximum confidence: 0.2832
+Average latency ms: 117.53
+Intruder/unknown decisions: 2444
+Top predictions:
+  Checking...: 1822
+  INTRUDER_0072: 314
+  INTRUDER_0015: 286
+  Ajay: 36
+  INTRUDER_0041: 22
+  Jerry Lokesh: 19
+  P.SURYA: 8
+  Samir: 3
+  Ganesh: 3
+Labeled detection rows: 2513
+Binary authorized/unauthorized metrics:
+  Accuracy: 0.9723
+  Precision: 0.0000
+  Recall: 0.0000
+  F1-score: 0.0000
+  FAR: 0.0277
+  FRR: 0.0000
+  TP=0 TN=2444 FP=69 FN=0
+Single-person identity accuracy skipped for this multi-person/binary test.
+Known vs Unknown Test Split:
+  Expected known people: not available in logs
+  Known-person test: no labeled known rows
+  Unknown/intruder test:
+    Rows: 2513
+    Correctly rejected: 2444
+    False accepted as known: 69
+    Unknown rejection accuracy: 0.9723
+    FAR: 0.0277
+    False accepted identities:
+      Ajay: 36
+      Jerry Lokesh: 19
+      P.SURYA: 8
+      Samir: 3
+      Ganesh: 3
+Frame-level summary:
+  Total frames logged: 5000
+  Processed frames: 2499
+  Skipped frames: 2501
+  Frames with faces: 2497
+  Average faces/frame: 0.50
+  Average frame log latency ms: 89.10
+Ground-truth people recorded:
+  unauthorized: 5000 frames
+Average FPS: 4.09
+Minimum FPS: 0.04
+Maximum FPS: 5.14
+Average frame latency ms: 241.57
+
+Generated Graphs
+================
+analysis_report\test_reports\unlabeled_20260409_104834\graphs\realtime_metrics.png
+analysis_report\test_reports\unlabeled_20260409_104834\graphs\realtime_known_unknown_metrics.png
+analysis_report\test_reports\unlabeled_20260409_104834\graphs\realtime_confidence.png
+analysis_report\test_reports\unlabeled_20260409_104834\graphs\realtime_confidence_distribution.png
+analysis_report\test_reports\unlabeled_20260409_104834\graphs\realtime_predictions.png
+analysis_report\test_reports\unlabeled_20260409_104834\graphs\realtime_fps_latency.png
+analysis_report\test_reports\unlabeled_20260409_104834\graphs\realtime_faces_per_frame.png

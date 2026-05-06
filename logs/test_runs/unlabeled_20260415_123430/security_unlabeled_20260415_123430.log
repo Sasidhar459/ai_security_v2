@@ -1,0 +1,16 @@
+2026-04-15 12:34:30,473 [INFO] Test logs for this run: S:\final_year_project\ai_security-main\logs\test_runs\unlabeled_20260415_123430
+2026-04-15 12:34:34,980 [INFO] Security system running. Press 'q' to quit.
+2026-04-15 12:34:47,999 [INFO] Confirmed intruder after smoothing: low_prob(0.144) track=9_11
+2026-04-15 12:34:48,127 [INFO] [ALERT 2/2] [WARN] Intruder [INTRUDER_0002] still present — 2026-04-15 12:34:47
+2026-04-15 12:34:50,479 [INFO] Telegram alert sent successfully (attempt 1).
+2026-04-15 12:34:53,063 [INFO] Confirmed intruder after smoothing: low_prob(0.104) track=6_11
+2026-04-15 12:34:53,196 [INFO] [ALERT 1/2] [ALERT] Unknown person detected! [INTRUDER_0067] at 2026-04-15 12:34:53
+2026-04-15 12:34:53,538 [INFO] Confirmed intruder after smoothing: low_prob(0.133) track=6_11
+2026-04-15 12:34:53,991 [INFO] Confirmed intruder after smoothing: low_prob(0.144) track=6_11
+2026-04-15 12:34:54,051 [INFO] ARRIVAL  -> Mohan
+2026-04-15 12:34:54,719 [INFO] Confirmed intruder after smoothing: low_prob(0.190) track=6_11
+2026-04-15 12:34:55,328 [INFO] Confirmed intruder after smoothing: low_prob(0.128) track=6_11
+2026-04-15 12:34:55,478 [INFO] Telegram alert sent successfully (attempt 1).
+2026-04-15 12:35:05,336 [INFO] ARRIVAL  -> D.MONIKA
+2026-04-15 12:35:28,257 [INFO] Interrupted by user.
+2026-04-15 12:35:28,564 [INFO] Shutdown complete.

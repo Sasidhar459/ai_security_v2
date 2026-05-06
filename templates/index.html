@@ -75,6 +75,10 @@ header::after{
   font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--green);
 }
 .sys-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:breathe 1.6s ease infinite}
+.sys-pill.warn{color:var(--amber);border-color:rgba(255,196,0,.35)}
+.sys-pill.off{color:var(--red);border-color:rgba(255,23,68,.35)}
+.sys-dot.warn{background:var(--amber)}
+.sys-dot.off{background:var(--red)}
 @keyframes breathe{0%,100%{opacity:1;box-shadow:0 0 5px var(--green)}50%{opacity:.25;box-shadow:none}}
 
 .hdr-right{display:flex;align-items:center;gap:16px}
@@ -348,6 +352,7 @@ header::after{
 .sbi.ok{background:var(--green);box-shadow:0 0 4px var(--green)}
 .sbi.err{background:var(--red);box-shadow:0 0 4px var(--red)}
 .sbi.warn{background:var(--amber);box-shadow:0 0 4px var(--amber)}
+.sbi.off{background:var(--text3);box-shadow:none}
 #sb-latency{color:var(--text2)}
 #sb-rc{color:var(--text3)}
 
@@ -380,15 +385,15 @@ tbody td{padding:9px 16px;font-size:12px;font-family:var(--mono);color:var(--tex
       </svg>
     </div>
     <div>
-      <div class="logo-name">SENTINEL</div>
-      <div class="logo-tag">AI Security Platform</div>
+      <div class="logo-name">SMART GUARD AI</div>
+      <div class="logo-tag">AUTOMATED SECURITY MONITORING SYSTEM</div>
     </div>
   </div>
 
   <div class="hdr-center">
-    <div class="sys-pill">
-      <div class="sys-dot"></div>
-      <span>SYSTEM ACTIVE</span>
+    <div class="sys-pill" id="sys-pill">
+      <div class="sys-dot" id="sys-dot"></div>
+      <span id="sys-state">SYSTEM ACTIVE</span>
     </div>
   </div>
 
@@ -557,6 +562,8 @@ tbody td{padding:9px 16px;font-size:12px;font-family:var(--mono);color:var(--tex
 
 <!-- ══ STATUS BAR ════════════════════════════════════════════ -->
 <div id="statusbar">
+  <div class="sb-item"><div class="sbi warn" id="sb-core"></div><span>CORE</span></div>
+  <div class="sb-item"><div class="sbi warn" id="sb-db"></div><span>DB</span></div>
   <div class="sb-item"><div class="sbi ok" id="sb-stream"></div><span>STREAM</span></div>
   <div class="sb-item"><div class="sbi ok" id="sb-api"></div><span>API</span></div>
   <div class="sb-item"><div class="sbi ok" id="sb-alerts"></div><span>ALERTS</span></div>
@@ -598,6 +605,92 @@ tbody td{padding:9px 16px;font-size:12px;font-family:var(--mono);color:var(--tex
   document.getElementById('cam-ts').textContent = ts;
   setTimeout(clockTick, 1000);
 })();
+
+const dashboardState = {
+  systemStatus: null
+};
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function setIndicator(id, state) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.className = `sbi ${state}`;
+}
+
+function setSystemPill(mode, label) {
+  const pill = document.getElementById('sys-pill');
+  const dot = document.getElementById('sys-dot');
+  const text = document.getElementById('sys-state');
+  if (!pill || !dot || !text) return;
+
+  pill.className = 'sys-pill';
+  dot.className = 'sys-dot';
+  if (mode === 'warn') {
+    pill.classList.add('warn');
+    dot.classList.add('warn');
+  } else if (mode === 'off') {
+    pill.classList.add('off');
+    dot.classList.add('off');
+  }
+  text.textContent = label;
+}
+
+function renderNoAlert(message = '-- NO ACTIVE ALERTS --') {
+  document.getElementById('alert-body').innerHTML =
+    `<div class="no-alert">${escapeHtml(message)}</div>`;
+  document.getElementById('alert-dot').className = 'ph-dot';
+}
+
+function applySystemStatus(data) {
+  dashboardState.systemStatus = data || {};
+
+  const dbConnected = Boolean(data?.db_connected);
+  const streamLive = Boolean(data?.stream_live);
+  const systemActive = Boolean(data?.system_active);
+  const hasAlert = Boolean(data?.has_alert);
+
+  setIndicator('sb-core', systemActive ? (streamLive ? 'ok' : 'warn') : 'err');
+  setIndicator('sb-db', dbConnected ? 'ok' : (data?.db_configured ? 'warn' : 'off'));
+  setIndicator('sb-stream', streamLive ? 'ok' : (systemActive ? 'warn' : 'err'));
+  setIndicator('sb-alerts', hasAlert ? 'warn' : 'ok');
+
+  if (systemActive && streamLive) {
+    setSystemPill('ok', 'SYSTEM ACTIVE');
+  } else if (systemActive) {
+    setSystemPill('warn', 'SYSTEM ONLINE');
+  } else {
+    setSystemPill('off', 'SYSTEM STOPPED');
+  }
+
+  const coord = document.getElementById('cam-coord');
+  if (coord && data?.test_people && data.test_people !== '?') {
+    coord.textContent = `ZONE · ${String(data.test_people).toUpperCase()}`;
+  }
+
+  const connSub = document.getElementById('conn-sub');
+  if (connSub && !streamLive && data?.runtime_reason) {
+    connSub.textContent = `${String(data.runtime_reason).replace(/_/g, ' ')} · waiting for fresh frames`;
+  }
+}
+
+async function fetchSystemStatus() {
+  try {
+    const data = await apiFetch('/system_status');
+    applySystemStatus(data);
+  } catch(e) {
+    setIndicator('sb-core', 'err');
+    setIndicator('sb-db', 'warn');
+    setSystemPill('off', 'STATUS UNAVAILABLE');
+  }
+}
 
 
 // ─────────────────────────────────────────────────────────────
@@ -746,13 +839,13 @@ const feedMgr = new FeedManager({
 
   onOnline() {
     document.getElementById('conn-ov').classList.remove('visible');
-    document.getElementById('sb-stream').className = 'sbi ok';
+    setIndicator('sb-stream', 'ok');
     const rc = feedMgr.reconnects;
     document.getElementById('sb-rc').textContent = `RECONNECTS: ${rc}`;
   },
   onOffline() {
     document.getElementById('conn-ov').classList.add('visible');
-    document.getElementById('sb-stream').className = 'sbi err';
+    setIndicator('sb-stream', 'err');
   }
 });
 
@@ -769,45 +862,68 @@ window.addEventListener('focus', () => feedMgr.forceReload());
 //  ALARM
 // ─────────────────────────────────────────────────────────────
 let alarmOn    = false;
-let alarmTimer = null;
 let lastSig    = null;
+let dismissedSig = null;
+let activeAlarmSig = null;
 let totalAlerts = 0;
+let alarmAudioCtx = null;
+let alarmBeepTimers = [];
 
-function triggerAlarm(msg) {
+function triggerAlarm(msg, sig = null) {
   if (alarmOn) return;
   alarmOn = true;
+  activeAlarmSig = sig;
   totalAlerts++;
   document.getElementById('alm-text').textContent = msg;
   document.getElementById('alarm').classList.add('on');
   document.getElementById('i-flash').classList.add('on');
   document.getElementById('i-tag').style.display = 'block';
 
-  // Beep using Web Audio API
+  // Smooth three-note alert burst instead of a harsh repeating ring.
   try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    function beep() {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.type = 'square';
-      osc.frequency.value = 880;
-      gain.gain.setValueAtTime(0.06, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.18);
+    if (!alarmAudioCtx) {
+      alarmAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
     }
-    beep();
-    alarmTimer = setInterval(beep, 1300);
+    clearAlarmAudio();
+
+    function beep(freq, duration, delayMs) {
+      const timer = setTimeout(() => {
+        const ctx = alarmAudioCtx;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.035, ctx.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      }, delayMs);
+      alarmBeepTimers.push(timer);
+    }
+
+    beep(740, 0.12, 0);
+    beep(880, 0.14, 180);
+    beep(740, 0.18, 420);
   } catch(e) {}
+}
+
+function clearAlarmAudio() {
+  while (alarmBeepTimers.length) {
+    clearTimeout(alarmBeepTimers.pop());
+  }
 }
 
 function dismissAlarm() {
   alarmOn = false;
+  if (activeAlarmSig) dismissedSig = activeAlarmSig;
+  activeAlarmSig = null;
   document.getElementById('alarm').classList.remove('on');
   document.getElementById('i-flash').classList.remove('on');
   document.getElementById('i-tag').style.display = 'none';
-  if (alarmTimer) { clearInterval(alarmTimer); alarmTimer = null; }
+  clearAlarmAudio();
 }
 
 
@@ -832,7 +948,17 @@ async function apiFetch(url) {
   document.getElementById('sb-latency').textContent = `${ms} ms`;
   document.getElementById('sb-api').className =
     ms < 300 ? 'sbi ok' : ms < 800 ? 'sbi warn' : 'sbi err';
-  return res.json();
+  let data = null;
+  try {
+    data = await res.json();
+  } catch(e) {
+    data = null;
+  }
+  if (!res.ok) {
+    const err = data && data.error ? data.error : `Request failed (${res.status})`;
+    throw new Error(err);
+  }
+  return data;
 }
 
 
@@ -845,8 +971,8 @@ function mkRow(r) {
   const cls = r.event === 'intruder' ? 'int' : r.event === 'arrival' ? 'arr' : 'dep';
   const lbl = r.event === 'intruder' ? 'INTRDR' : r.event === 'arrival' ? 'ARRIVE' : 'DEPART';
   return `<div class="log-row">
-    <span class="lr-t">${fmt(r.timestamp)}</span>
-    <span class="lr-n">${r.name}</span>
+    <span class="lr-t">${escapeHtml(fmt(r.timestamp))}</span>
+    <span class="lr-n">${escapeHtml(r.name)}</span>
     <span class="lr-b ${cls}">${lbl}</span>
   </div>`;
 }
@@ -868,7 +994,9 @@ function setText(id, val) {
 async function fetchLogs() {
   try {
     const data = await apiFetch('/logs');
-    if (!Array.isArray(data)) return;
+    if (!Array.isArray(data)) {
+      return;
+    }
 
     const auth = data.filter(r => r.event !== 'intruder');
     const ints = data.filter(r => r.event === 'intruder');
@@ -891,7 +1019,7 @@ async function fetchLogs() {
 async function fetchStats() {
   try {
     const d = await apiFetch('/stats');
-    if (d.error) return;
+    if (!d) return;
 
     const present    = d.present    ?? 0;
     const authorized = d.authorized ?? 0;
@@ -924,20 +1052,28 @@ async function fetchStats() {
 async function fetchAlerts() {
   try {
     const d = await apiFetch('/alerts');
-    if (!d || !d.alert) return;
-
-    document.getElementById('sb-alerts').className = 'sbi ok';
+    if (!d || !d.alert) {
+      renderNoAlert();
+      if (!dashboardState.systemStatus?.has_alert) {
+        setIndicator('sb-alerts', 'ok');
+      }
+      return;
+    }
 
     const isInt = d.type === 'intruder';
+    setIndicator('sb-alerts', isInt ? 'warn' : 'ok');
     // Build a unique signature so we only alarm once per new event
-    const sig = String(d.id ?? '') + d.alert + (d.timestamp ?? '');
+    const sig = String(d.id ?? d.alert ?? '');
+    const title = d.title || (isInt ? 'Intruder Detected' : 'Authorized Access');
+    const subject = d.name || (isInt ? 'Unknown Person' : 'Recognized User');
+    const detail = d.message || d.alert;
 
     document.getElementById('alert-body').innerHTML = `
       <div class="alert-card ${isInt ? '' : 'ok'}">
-        <div class="ac-type ${isInt ? '' : 'ok'}">${isInt ? '⚠ INTRUDER ALERT' : '✓ AUTHORIZED ACCESS'}</div>
-        <div class="ac-name">${d.name || d.alert}</div>
-        <div class="ac-msg">${d.alert}</div>
-        <div class="ac-time">${d.timestamp || ''}</div>
+        <div class="ac-type ${isInt ? '' : 'ok'}">${escapeHtml(title)}</div>
+        <div class="ac-name">${escapeHtml(subject)}</div>
+        <div class="ac-msg">${escapeHtml(detail)}</div>
+        <div class="ac-time">${escapeHtml(d.timestamp || '')}</div>
       </div>`;
 
     document.getElementById('alert-dot').className = isInt ? 'ph-dot r' : 'ph-dot g';
@@ -945,10 +1081,14 @@ async function fetchAlerts() {
 
     if (isInt && sig !== lastSig) {
       lastSig = sig;
-      triggerAlarm('⚠ INTRUDER DETECTED — SECURITY BREACH');
+      dismissedSig = null;
+      if (sig !== dismissedSig) {
+        triggerAlarm(`${title} • ${subject}`, sig);
+      }
     }
   } catch(e) {
-    document.getElementById('sb-alerts').className = 'sbi err';
+    setIndicator('sb-alerts', 'err');
+    renderNoAlert('ALERT FEED UNAVAILABLE');
   }
 }
 
@@ -958,16 +1098,15 @@ async function fetchAlerts() {
 // ─────────────────────────────────────────────────────────────
 function openModal() {
   document.getElementById('modal').classList.add('on');
-  fetch('/attendance', { cache: 'no-store' })
-    .then(r => r.json())
+  apiFetch('/attendance')
     .then(rows => {
       if (!Array.isArray(rows)) return;
       document.getElementById('modal-tbody').innerHTML = rows.map(r => `
         <tr>
-          <td>${r.name}</td>
-          <td>${r.arrival_time}</td>
-          <td>${r.departure_time}</td>
-          <td><span class="td-s ${r.status === 'INSIDE' ? 'inside' : 'left'}">${r.status}</span></td>
+          <td>${escapeHtml(r.name)}</td>
+          <td>${escapeHtml(r.arrival_time)}</td>
+          <td>${escapeHtml(r.departure_time)}</td>
+          <td><span class="td-s ${r.status === 'INSIDE' ? 'inside' : 'left'}">${escapeHtml(r.status)}</span></td>
         </tr>`).join('');
     })
     .catch(() => {});
@@ -980,17 +1119,19 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal()
 // ─────────────────────────────────────────────────────────────
 //  POLLING — guard against concurrent overlapping calls
 // ─────────────────────────────────────────────────────────────
-let _pl = false, _ps = false, _pa = false;
+let _pl = false, _ps = false, _pa = false, _pc = false;
 
 async function pollLogs()   { if(_pl) return; _pl=true; await fetchLogs().catch(()=>{}); _pl=false; }
 async function pollStats()  { if(_ps) return; _ps=true; await fetchStats().catch(()=>{}); _ps=false; }
 async function pollAlerts() { if(_pa) return; _pa=true; await fetchAlerts().catch(()=>{}); _pa=false; }
+async function pollCore()   { if(_pc) return; _pc=true; await fetchSystemStatus().catch(()=>{}); _pc=false; }
 
 // Initial fetch
-pollLogs(); pollStats(); pollAlerts();
+pollCore(); pollLogs(); pollStats(); pollAlerts();
 
 // Recurring intervals — pause when tab is hidden to reduce load
 function safePoll(fn) { if (!document.hidden) fn(); }
+setInterval(() => safePoll(pollCore),   2000);   // core status every 2 s
 setInterval(() => safePoll(pollLogs),   2500);   // logs every 2.5 s
 setInterval(() => safePoll(pollStats),  1000);   // stats every 1 s
 setInterval(() => safePoll(pollAlerts), 1500);   // alerts every 1.5 s

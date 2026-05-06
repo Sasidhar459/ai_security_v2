@@ -1,0 +1,92 @@
+Training Evaluation Report
+==========================
+
+Device            : cuda
+Dataset path      : dataset
+Total embeddings  : 2033
+Classes           : A.HIMA BINDHU, Ajay, Akhil, Aravid, B.LIKITHA, B.USHA RANI, B.VISHNU, BANNURU NANDHINI, Bhanu, C.GREESHMA SREE, C.HIMABINDU, C.SRAVANI, D.MONIKA, D.SHARON, E.NIROSHA, G.AKHILA, G.ROHINI, G.VARSHITHA, Ganesh, Jerry Lokesh, K.BHAVANA, K.HARI CHANDANA, K.HIDAYATHUNNISA, K.ROJITHA, K.SWAPNA, M.HAREESHA, M.MAHENDRA, Madhan, Mohan, N.TEJASWINI, P.CHAITHUU, P.SURYA, POOJASREE, Pawan, Rahul, S.APSHA, S.NISSI, S.P.HUSSNA, S.R.K.UZMA, SHAIK HALIMA, Samir, Sasidhar, Suresh, Surya, T.ARAVIND, T.EEKSHITHA, V.BHAVANA, V.NAGA, Y.ADARSH, Yogesh, kEERTHANA VERONICA
+Train samples     : 1626
+Validation samples: 407
+Best params       : {'C': 0.1, 'kernel': 'linear'}
+CV folds          : 5
+
+Summary Metrics
+---------------
+Accuracy          : 0.9558
+Macro Precision   : 0.9611
+Macro Recall      : 0.9559
+Macro F1-score    : 0.9559
+Weighted Precision: 0.9610
+Weighted Recall   : 0.9558
+Weighted F1-score : 0.9558
+
+Per-class Report
+----------------
+                    precision    recall  f1-score   support
+
+     A.HIMA BINDHU       0.89      1.00      0.94         8
+              Ajay       1.00      1.00      1.00         8
+             Akhil       0.89      1.00      0.94         8
+            Aravid       1.00      1.00      1.00         8
+         B.LIKITHA       1.00      1.00      1.00         8
+       B.USHA RANI       1.00      1.00      1.00         8
+          B.VISHNU       1.00      0.88      0.93         8
+  BANNURU NANDHINI       0.80      1.00      0.89         8
+             Bhanu       0.88      0.88      0.88         8
+   C.GREESHMA SREE       1.00      0.88      0.93         8
+       C.HIMABINDU       1.00      1.00      1.00         8
+         C.SRAVANI       1.00      0.88      0.93         8
+          D.MONIKA       1.00      1.00      1.00         8
+          D.SHARON       0.89      1.00      0.94         8
+         E.NIROSHA       1.00      0.88      0.93         8
+          G.AKHILA       1.00      0.88      0.93         8
+          G.ROHINI       1.00      1.00      1.00         8
+       G.VARSHITHA       1.00      0.88      0.93         8
+            Ganesh       1.00      1.00      1.00         8
+      Jerry Lokesh       0.89      1.00      0.94         8
+         K.BHAVANA       0.80      1.00      0.89         8
+   K.HARI CHANDANA       1.00      1.00      1.00         8
+  K.HIDAYATHUNNISA       1.00      1.00      1.00         8
+         K.ROJITHA       1.00      0.88      0.93         8
+          K.SWAPNA       0.88      0.88      0.88         8
+        M.HAREESHA       1.00      1.00      1.00         8
+        M.MAHENDRA       1.00      0.75      0.86         8
+            Madhan       1.00      1.00      1.00         8
+             Mohan       0.89      1.00      0.94         8
+       N.TEJASWINI       0.89      1.00      0.94         8
+        P.CHAITHUU       1.00      1.00      1.00         7
+           P.SURYA       0.78      0.88      0.82         8
+         POOJASREE       1.00      1.00      1.00         8
+             Pawan       0.89      1.00      0.94         8
+             Rahul       1.00      1.00      1.00         8
+           S.APSHA       1.00      1.00      1.00         8
+           S.NISSI       1.00      0.88      0.93         8
+        S.P.HUSSNA       1.00      0.88      0.93         8
+        S.R.K.UZMA       1.00      1.00      1.00         8
+      SHAIK HALIMA       1.00      1.00      1.00         8
+             Samir       1.00      0.88      0.93         8
+          Sasidhar       1.00      1.00      1.00         8
+            Suresh       1.00      1.00      1.00         8
+             Surya       0.78      0.88      0.82         8
+         T.ARAVIND       1.00      1.00      1.00         8
+       T.EEKSHITHA       1.00      1.00      1.00         8
+         V.BHAVANA       1.00      1.00      1.00         8
+            V.NAGA       1.00      1.00      1.00         8
+          Y.ADARSH       1.00      0.75      0.86         8
+            Yogesh       1.00      1.00      1.00         8
+kEERTHANA VERONICA       0.89      1.00      0.94         8
+
+          accuracy                           0.96       407
+         macro avg       0.96      0.96      0.96       407
+      weighted avg       0.96      0.96      0.96       407
+
+Confusion Matrix
+----------------
+Labels: A.HIMA BINDHU, Ajay, Akhil, Aravid, B.LIKITHA, B.USHA RANI, B.VISHNU, BANNURU NANDHINI, Bhanu, C.GREESHMA SREE, C.HIMABINDU, C.SRAVANI, D.MONIKA, D.SHARON, E.NIROSHA, G.AKHILA, G.ROHINI, G.VARSHITHA, Ganesh, Jerry Lokesh, K.BHAVANA, K.HARI CHANDANA, K.HIDAYATHUNNISA, K.ROJITHA, K.SWAPNA, M.HAREESHA, M.MAHENDRA, Madhan, Mohan, N.TEJASWINI, P.CHAITHUU, P.SURYA, POOJASREE, Pawan, Rahul, S.APSHA, S.NISSI, S.P.HUSSNA, S.R.K.UZMA, SHAIK HALIMA, Samir, Sasidhar, Suresh, Surya, T.ARAVIND, T.EEKSHITHA, V.BHAVANA, V.NAGA, Y.ADARSH, Yogesh, kEERTHANA VERONICA
+[[8 0 0 ... 0 0 0]
+ [0 8 0 ... 0 0 0]
+ [0 0 8 ... 0 0 0]
+ ...
+ [0 0 0 ... 6 0 0]
+ [0 0 0 ... 0 8 0]
+ [0 0 0 ... 0 0 8]]

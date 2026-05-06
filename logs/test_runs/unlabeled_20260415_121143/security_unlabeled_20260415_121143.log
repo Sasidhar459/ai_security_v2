@@ -1,0 +1,10 @@
+2026-04-15 12:11:43,689 [INFO] Test logs for this run: S:\final_year_project\ai_security-main\logs\test_runs\unlabeled_20260415_121143
+2026-04-15 12:11:48,784 [INFO] Security system running. Press 'q' to quit.
+2026-04-15 12:12:10,996 [INFO] ARRIVAL  -> Mohan
+2026-04-15 12:12:10,996 [INFO] log_arrival  fallback: Mohan
+2026-04-15 12:12:17,321 [INFO] ARRIVAL  -> Sasidhar
+2026-04-15 12:12:17,321 [INFO] log_arrival  fallback: Sasidhar
+2026-04-15 12:12:26,226 [INFO] ARRIVAL  -> Bhanu
+2026-04-15 12:12:26,226 [INFO] log_arrival  fallback: Bhanu
+2026-04-15 12:12:29,427 [INFO] Interrupted by user.
+2026-04-15 12:12:29,849 [INFO] Shutdown complete.

@@ -1,86 +1,194 @@
 import os
+import torch
 
 # -------------------------
-# Paths and config
+# Paths
 # -------------------------
-BASE_DIR  = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_DIR = os.path.join(BASE_DIR, "model")
 os.makedirs(MODEL_DIR, exist_ok=True)
 
-YOLO_FACE_MODEL  = os.path.join(BASE_DIR, "yolov8n-face.pt")
-MODEL_PATH       = os.path.join(MODEL_DIR, "face_classifier.pkl")
-SCALER_PATH      = os.path.join(MODEL_DIR, "scaler.pkl")
-CENTROIDS_PATH   = os.path.join(MODEL_DIR, "centroids.pkl")
 
-INTRUDER_DIR     = os.path.join(BASE_DIR, "intruder_images")
+def _is_valid_model_file(path):
+    return os.path.isfile(path) and os.path.getsize(path) > 1_000_000
+
+
+def _resolve_yolo_model():
+    candidates = [
+        os.path.join(BASE_DIR, "model", "yolov8n-face.pt"),
+        os.path.join(BASE_DIR, "yolov8n-face.pt"),
+    ]
+    for candidate in candidates:
+        if _is_valid_model_file(candidate):
+            return candidate
+    # Keep the fallback explicit so startup still fails with a clear path
+    # if the model file is missing.
+    return candidates[0]
+
+
+YOLO_FACE_MODEL = _resolve_yolo_model()
+MODEL_PATH = os.path.join(MODEL_DIR, "face_classifier.pkl")
+SCALER_PATH = os.path.join(MODEL_DIR, "scaler.pkl")
+CENTROIDS_PATH = os.path.join(MODEL_DIR, "centroids.pkl")
+
+INTRUDER_DIR = os.path.join(BASE_DIR, "intruder_images")
 os.makedirs(INTRUDER_DIR, exist_ok=True)
 INTRUDER_DB_PATH = os.path.join(INTRUDER_DIR, "intruder_db.json")
+
+DATASET_DIR = os.path.join(BASE_DIR, "dataset")
+os.makedirs(DATASET_DIR, exist_ok=True)
+
+LOG_DIR = os.path.join(BASE_DIR, "logs")
+os.makedirs(LOG_DIR, exist_ok=True)
+
+REPORT_DIR = os.path.join(BASE_DIR, "analysis_report")
+os.makedirs(REPORT_DIR, exist_ok=True)
+
+
+def _env_flag(name: str, default: bool) -> bool:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "y", "on"}
+
+# -------------------------
+# Database (SQL Server)
+# -------------------------
+# Keep env overrides for compatibility with the older files while still
+# providing the local defaults used by this project.
+DB_CONFIG = {
+    "driver": os.getenv("DB_DRIVER", "ODBC Driver 17 for SQL Server").strip(),
+    "server": os.getenv("DB_SERVER", r"localhost\SQLEXPRESS").strip(),
+    "database": os.getenv("DB_NAME", "AI_SECURITY").strip(),
+    "schema": os.getenv("DB_SCHEMA", "dbo").strip(),
+    "persons_table": os.getenv("DB_PERSONS_TABLE", "Persons").strip(),
+    "attendance_table": os.getenv("DB_ATTENDANCE_TABLE", "Attendance").strip(),
+    "trusted_connection": _env_flag("DB_TRUSTED_CONNECTION", True),
+    "encrypt": _env_flag("DB_ENCRYPT", False),
+    "trust_server_certificate": _env_flag("DB_TRUST_SERVER_CERTIFICATE", True),
+    "timeout": int(os.getenv("DB_TIMEOUT", "5").strip()),
+    "username": os.getenv("DB_USERNAME", "").strip(),
+    "password": os.getenv("DB_PASSWORD", ""),
+}
+
+
+def build_db_connection_string() -> str:
+    parts = [
+        f"DRIVER={{{DB_CONFIG['driver']}}}",
+        f"SERVER={DB_CONFIG['server']}",
+        f"DATABASE={DB_CONFIG['database']}",
+        f"Encrypt={'yes' if DB_CONFIG['encrypt'] else 'no'}",
+        f"TrustServerCertificate={'yes' if DB_CONFIG['trust_server_certificate'] else 'no'}",
+    ]
+    if DB_CONFIG["trusted_connection"]:
+        parts.append("Trusted_Connection=yes")
+    else:
+        parts.append(f"UID={DB_CONFIG['username']}")
+        parts.append(f"PWD={DB_CONFIG['password']}")
+    return ";".join(parts) + ";"
 
 # -------------------------
 # Camera / runtime
 # -------------------------
 DEPARTURE_TIMEOUT = 60
-CAMERA_INDEX      = 0
-FRAME_SKIP        = 2
+CAMERA_INDEX = 0
+FRAME_SKIP = 2
+YOLO_IMGSZ = 512
+YOLO_MAX_DET = 10
 
 # -------------------------
-# Verification thresholds
-#
-# HOW THE DUAL GATE WORKS:
-#
-#  Case A — High confidence override (classifier alone is enough):
-#    classifier_prob >= CONFIDENCE_OVERRIDE  →  accepted as known
-#    (centroid check is skipped entirely)
-#
-#  Case B — Normal dual gate:
-#    classifier_prob >= CONFIDENCE_THRESHOLD
-#    AND centroid distance <= CENTROID_ACCEPT_THRESHOLD
-#    AND centroid nearest name == classifier name
-#    →  accepted as known
-#
-#  Anything else → Unknown / Intruder
-#
-# TUNING GUIDE:
-#   Known people flagged as intruder → raise CENTROID_ACCEPT_THRESHOLD (e.g. 0.75)
-#   Unknown slipping through as known → lower CENTROID_ACCEPT_THRESHOLD (e.g. 0.60)
-# -------------------------
-CONFIDENCE_THRESHOLD    = 0.85   # minimum prob for normal dual-gate path
-CONFIDENCE_OVERRIDE     = 0.96   # if prob >= this, skip centroid check entirely
-CENTROID_ACCEPT_THRESHOLD = 0.72 # max cosine distance to centroid  (relaxed from 0.55)
-
-# Below this prob → immediate intruder, skip all gates
-UNKNOWN_IMMEDIATE_THRESHOLD = 0.35
-
-# Centroid distance above this → immediate intruder (no classifier needed)
-KNOWN_DISTANCE_THRESHOLD  = 0.92
-
-# -------------------------
-# Smoothing / voting
-# -------------------------
-SMOOTHING_FRAMES      = 8
-MIN_KNOWN_VOTES       = 5
-MIN_UNKNOWN_VOTES     = 4
-INTRUDER_CONFIRM_SECS = 3
-
-# -------------------------
-# Intruder DB
-# -------------------------
-INTRUDER_MAX_ALERTS = 2
-INTRUDER_ALERT_GAP  = 120
-INTRUDER_EMBED_DIST = 0.45
-
-# -------------------------
-# Face crop padding
+# Face cropping padding
 # -------------------------
 CROP_PADDING = 0.20
 
 # -------------------------
-# Telegram credentials
+# Dual-gate thresholds
 # -------------------------
-TELEGRAM_BOT_TOKEN = "8489650776:AAE8lV1AtvqzXz7L-X8u6kquk0Cuj5sOtM8"
-TELEGRAM_CHAT_ID   = "6034901248"
+CONFIDENCE_THRESHOLD = 0.25
+CONFIDENCE_OVERRIDE = 0.80
+# Tuned from generate_centroid.py guidance:
+# if the closest inter-person centroid distance is around 0.40 and
+# unknowns are typically 0.70+, then 0.55 is a safer midpoint than 0.85.
+CENTROID_ACCEPT_THRESHOLD = 0.55
+
+# Legacy rescue gate values still imported by security_system.py.
+# Keep rescue stricter than the main accept threshold so it only helps when
+# centroid agreement is very strong.
+CENTROID_RESCUE_THRESHOLD = 0.45
+CENTROID_RESCUE_CONFIDENCE = 0.20
+
+UNKNOWN_IMMEDIATE_THRESHOLD = 0.12
+KNOWN_DISTANCE_THRESHOLD = 0.90
 
 # -------------------------
-# Optional FAISS
+# Smoothing / voting
+# -------------------------
+SMOOTHING_FRAMES = 10
+MIN_KNOWN_VOTES = 6
+MIN_UNKNOWN_VOTES = 8
+
+# -------------------------
+# Intruder alerts
+# -------------------------
+INTRUDER_ALERT_GAP = 300
+INTRUDER_MAX_ALERTS = 2
+INTRUDER_EMBED_DIST = 0.45
+ALERT_ON_UNIDENTIFIED = True
+ATTENDANCE_LOG_COOLDOWN_SECS = 60
+UNIDENTIFIED_CONFIRM_SECS = 4
+INTRUDER_CONFIRM_SECS = 12
+RECENT_KNOWN_GRACE_SECS = 20
+MIN_TRACK_AGE_FOR_INTRUDER = 20
+REALTIME_CLOSEDSET_FALLBACK = True
+REALTIME_CLOSEDSET_MIN_CONF = 0.24
+REALTIME_CLOSEDSET_MIN_MARGIN = 0.04
+REALTIME_LABEL_HOLD_SECS = 15.0
+REALTIME_KNOWN_MIN_CONF = 0.14
+REALTIME_ALLOWED_NAMES = ["Sasidhar", "Mohan", "Suresh"]
+REALTIME_POSE_TTA_ENABLED = True
+REALTIME_POSE_TTA_ANGLES = [-10, 10]
+REALTIME_POSE_TTA_TRIGGER_CONF = 0.45
+REALTIME_POSE_TTA_EVERY_N_FRAMES = 2
+
+# -------------------------
+# Identity lock
+# -------------------------
+IDENTITY_LOCK_ENABLED = True
+IDENTITY_LOCK_MIN_CONF = 0.18
+IDENTITY_LOCK_HOLD_SECS = 15
+IDENTITY_UNLOCK_MISMATCH_FRAMES = 8
+
+# -------------------------
+# Tracking
+# -------------------------
+TRACKING_MAX_DISAPPEARED = 30
+TRACKING_MAX_DISTANCE = 60
+
+# -------------------------
+# Telegram
+# -------------------------
+TELEGRAM_BOT_TOKEN = "8489650776:AAE8lV1AtvqzXz7L-X8u6kquk0Cuj5sOtM8"
+TELEGRAM_CHAT_ID = "6034901248"
+
+# -------------------------
+# Optional
 # -------------------------
 USE_FAISS = False
+TUNE_SVM = True
+ANTI_SPOOFING_ENABLED = False
+
+# -------------------------
+# CUDA / runtime acceleration
+# -------------------------
+CUDA_REQUIRED = True
+TORCH_DEVICE = "cuda:0" if torch.cuda.is_available() else "cpu"
+YOLO_DEVICE = 0 if torch.cuda.is_available() else "cpu"
+
+# -------------------------
+# Automatic live metrics
+# -------------------------
+AUTO_METRICS_ENABLED = True
+AUTO_METRICS_INTERVAL_SECS = 900
+LIVE_METRICS_JSON = os.path.join(REPORT_DIR, "live_metrics_latest.json")
+LIVE_METRICS_CSV = os.path.join(REPORT_DIR, "live_metrics_history.csv")
+FRAME_LEVEL_LOG_PATH = os.path.join(LOG_DIR, "realtime_frame_log.csv")

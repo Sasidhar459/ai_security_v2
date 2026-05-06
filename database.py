@@ -1,33 +1,99 @@
-import pyodbc
 import threading
 import queue
 import logging
+import re
 from datetime import datetime, timedelta
-from config import DB_CONFIG
+try:
+    import pyodbc
+except ImportError:
+    pyodbc = None
+
+from config import DB_CONFIG, build_db_connection_string
 
 log = logging.getLogger(__name__)
+
+
+def _safe_identifier(value: str, label: str) -> str:
+    value = (value or "").strip()
+    if not value:
+        raise ValueError(f"DB {label} is empty.")
+    if not re.fullmatch(r"[A-Za-z0-9_]+", value):
+        raise ValueError(
+            f"DB {label} contains unsupported characters: {value!r}. "
+            "Use letters, numbers, or underscore only."
+        )
+    return value
+
+
+def _quoted_identifier(value: str) -> str:
+    return f"[{value}]"
+
+
+def _qualified_table(table_key: str) -> str:
+    schema = _safe_identifier(DB_CONFIG.get("schema"), "schema")
+    table = _safe_identifier(DB_CONFIG.get(table_key), table_key)
+    return f"{_quoted_identifier(schema)}.{_quoted_identifier(table)}"
+
+
+PERSONS_TABLE_SQL = _qualified_table("persons_table")
+ATTENDANCE_TABLE_SQL = _qualified_table("attendance_table")
+
+
+def _ensure_pyodbc():
+    if pyodbc is None:
+        raise RuntimeError(
+            "pyodbc is not installed in the active interpreter. "
+            "Activate the project virtual environment or install requirements.txt."
+        )
 
 # ============================================================
 # CONNECTION
 # ============================================================
 def get_connection():
-    conn_str = (
-        f"DRIVER={{{DB_CONFIG['driver']}}};"
-        f"SERVER={DB_CONFIG['server']};"
-        f"DATABASE={DB_CONFIG['database']};"
-        "Trusted_Connection=yes;"
-    )
-    return pyodbc.connect(conn_str, timeout=5)
+    _ensure_pyodbc()
+    conn_str = build_db_connection_string()
+    return pyodbc.connect(conn_str, timeout=DB_CONFIG["timeout"])
 
 
 def test_connection():
     try:
         conn = get_connection()
+        cursor = conn.cursor()
+        missing = []
+        for label, table_name in (
+            ("persons_table", PERSONS_TABLE_SQL),
+            ("attendance_table", ATTENDANCE_TABLE_SQL),
+        ):
+            cursor.execute("SELECT OBJECT_ID(?, 'U')", (table_name,))
+            if cursor.fetchone()[0] is None:
+                missing.append(f"{label}={table_name}")
         conn.close()
-        log.info("[OK] Database connection successful.")
+        if missing:
+            log.error(
+                "[ERR] Database connected, but required tables were not found in %s: %s",
+                DB_CONFIG["database"],
+                ", ".join(missing),
+            )
+            return False
+        log.info(
+            "[OK] Database connection successful. Using %s and %s",
+            PERSONS_TABLE_SQL,
+            ATTENDANCE_TABLE_SQL,
+        )
         return True
-    except pyodbc.Error as e:
-        log.error(f"[ERR] Database connection FAILED: {e}")
+    except ValueError as e:
+        log.error(f"[ERR] Invalid database configuration: {e}")
+        return False
+    except Exception as e:
+        msg = str(e)
+        if "Encryption not supported on the client" in msg:
+            log.error(
+                "[ERR] Database connection FAILED: %s | Check SQL Server TLS/encryption settings "
+                "or set DB_SERVER/DB_ENCRYPT/DB_TRUST_SERVER_CERTIFICATE to match the instance.",
+                e,
+            )
+        else:
+            log.error(f"[ERR] Database connection FAILED: {e}")
         return False
 
 
@@ -41,17 +107,17 @@ def _do_log_arrival(name: str):
         cursor = conn.cursor()
 
         # Step 1: Get person_id
-        cursor.execute("SELECT person_id FROM Persons WHERE name = ?", (name,))
+        cursor.execute(f"SELECT person_id FROM {PERSONS_TABLE_SQL} WHERE name = ?", (name,))
         row = cursor.fetchone()
         if not row:
-            log.warning(f"'{name}' not found in Persons table. "
+            log.warning(f"'{name}' not found in {PERSONS_TABLE_SQL}. "
                         f"Check exact spelling — DB has: sasi, Sasidhar")
             return
         person_id = row[0]
 
         # Step 2: Already marked INSIDE?
         cursor.execute(
-            "SELECT 1 FROM Attendance WHERE person_id = ? AND status = 'INSIDE'",
+            f"SELECT 1 FROM {ATTENDANCE_TABLE_SQL} WHERE person_id = ? AND status = 'INSIDE'",
             (person_id,)
         )
         if cursor.fetchone():
@@ -61,7 +127,7 @@ def _do_log_arrival(name: str):
         # Step 3: 1-hour minimum gap between entries
         one_hour_ago = datetime.now() - timedelta(hours=1)
         cursor.execute(
-            "SELECT TOP 1 arrival_time FROM Attendance "
+            f"SELECT TOP 1 arrival_time FROM {ATTENDANCE_TABLE_SQL} "
             "WHERE person_id = ? ORDER BY arrival_time DESC",
             (person_id,)
         )
@@ -73,16 +139,35 @@ def _do_log_arrival(name: str):
 
         # Step 4: Insert
         cursor.execute(
-            "INSERT INTO Attendance (person_id, arrival_time, status) VALUES (?, ?, 'INSIDE')",
+            f"INSERT INTO {ATTENDANCE_TABLE_SQL} (person_id, arrival_time, status) VALUES (?, ?, 'INSIDE')",
             (person_id, datetime.now())
         )
         conn.commit()
         log.info(f"[OK] Arrival logged → {name} (person_id={person_id})")
 
-    except pyodbc.Error as e:
-        log.error(f"[ERR] SQL error in log_arrival('{name}'): {e}")
     except Exception as e:
-        log.error(f"[ERR] Error in log_arrival('{name}'): {e}")
+        msg = str(e)
+        if "Encryption not supported on the client" in msg:
+            log.error(
+                "[ERR] SQL connection error in log_arrival('%s'): %s | Check SQL Server encryption/TLS "
+                "settings and DB_SERVER=%s",
+                name,
+                e,
+                DB_CONFIG["server"],
+            )
+        elif "Invalid object name" in msg:
+            log.error(
+                "[ERR] SQL error in log_arrival('%s'): %s | Check DB_NAME=%s, DB_SCHEMA=%s, "
+                "DB_PERSONS_TABLE=%s, DB_ATTENDANCE_TABLE=%s",
+                name,
+                e,
+                DB_CONFIG["database"],
+                DB_CONFIG["schema"],
+                DB_CONFIG["persons_table"],
+                DB_CONFIG["attendance_table"],
+            )
+        else:
+            log.error(f"[ERR] Error in log_arrival('{name}'): {e}")
     finally:
         if conn:
             try: conn.close()
@@ -95,14 +180,14 @@ def _do_log_departure(name: str):
         conn = get_connection()
         cursor = conn.cursor()
 
-        cursor.execute("SELECT person_id FROM Persons WHERE name = ?", (name,))
+        cursor.execute(f"SELECT person_id FROM {PERSONS_TABLE_SQL} WHERE name = ?", (name,))
         row = cursor.fetchone()
         if not row:
             return
         person_id = row[0]
 
         cursor.execute(
-            "UPDATE Attendance SET departure_time = ?, status = 'LEFT' "
+            f"UPDATE {ATTENDANCE_TABLE_SQL} SET departure_time = ?, status = 'LEFT' "
             "WHERE person_id = ? AND status = 'INSIDE'",
             (datetime.now(), person_id)
         )
@@ -110,14 +195,90 @@ def _do_log_departure(name: str):
             conn.commit()
             log.info(f"[OK] Departure logged → {name}")
 
-    except pyodbc.Error as e:
-        log.error(f"[ERR] SQL error in log_departure('{name}'): {e}")
     except Exception as e:
-        log.error(f"[ERR] Error in log_departure('{name}'): {e}")
+        msg = str(e)
+        if "Encryption not supported on the client" in msg:
+            log.error(
+                "[ERR] SQL connection error in log_departure('%s'): %s | Check SQL Server encryption/TLS "
+                "settings and DB_SERVER=%s",
+                name,
+                e,
+                DB_CONFIG["server"],
+            )
+        elif "Invalid object name" in msg:
+            log.error(
+                "[ERR] SQL error in log_departure('%s'): %s | Check DB_NAME=%s, DB_SCHEMA=%s, "
+                "DB_PERSONS_TABLE=%s, DB_ATTENDANCE_TABLE=%s",
+                name,
+                e,
+                DB_CONFIG["database"],
+                DB_CONFIG["schema"],
+                DB_CONFIG["persons_table"],
+                DB_CONFIG["attendance_table"],
+            )
+        else:
+            log.error(f"[ERR] Error in log_departure('{name}'): {e}")
     finally:
         if conn:
             try: conn.close()
             except: pass
+
+
+def close_all_inside_attendance(shutdown_time: datetime | None = None) -> int:
+    """Mark every currently INSIDE attendance row as LEFT at shutdown time."""
+    conn = None
+    when = shutdown_time or datetime.now()
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            f"UPDATE {ATTENDANCE_TABLE_SQL} "
+            "SET departure_time = ?, status = 'LEFT' "
+            "WHERE status = 'INSIDE'",
+            (when,),
+        )
+        affected = max(cursor.rowcount, 0)
+        conn.commit()
+        if affected:
+            log.info(
+                "[OK] Shutdown attendance closeout complete. Marked %d row(s) LEFT at %s",
+                affected,
+                when.isoformat(timespec="seconds"),
+            )
+        else:
+            log.info(
+                "[OK] Shutdown attendance closeout complete. No INSIDE rows to update at %s",
+                when.isoformat(timespec="seconds"),
+            )
+        return affected
+    except Exception as e:
+        msg = str(e)
+        if "Encryption not supported on the client" in msg:
+            log.error(
+                "[ERR] SQL connection error during shutdown attendance closeout: %s | "
+                "Check SQL Server encryption/TLS settings and DB_SERVER=%s",
+                e,
+                DB_CONFIG["server"],
+            )
+        elif "Invalid object name" in msg:
+            log.error(
+                "[ERR] SQL error during shutdown attendance closeout: %s | "
+                "Check DB_NAME=%s, DB_SCHEMA=%s, DB_PERSONS_TABLE=%s, DB_ATTENDANCE_TABLE=%s",
+                e,
+                DB_CONFIG["database"],
+                DB_CONFIG["schema"],
+                DB_CONFIG["persons_table"],
+                DB_CONFIG["attendance_table"],
+            )
+        else:
+            log.error(f"[ERR] Error during shutdown attendance closeout: {e}")
+        return 0
+    finally:
+        if conn:
+            try:
+                conn.close()
+            except Exception:
+                pass
 
 
 # ============================================================

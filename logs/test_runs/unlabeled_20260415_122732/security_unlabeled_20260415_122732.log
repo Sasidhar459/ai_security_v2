@@ -1,0 +1,14 @@
+2026-04-15 12:27:32,725 [INFO] Test logs for this run: S:\final_year_project\ai_security-main\logs\test_runs\unlabeled_20260415_122732
+2026-04-15 12:27:36,117 [INFO] Security system running. Press 'q' to quit.
+2026-04-15 12:27:41,724 [INFO] ARRIVAL  -> Sasidhar
+2026-04-15 12:29:23,877 [INFO] ARRIVAL  -> Mohan
+2026-04-15 12:29:53,159 [INFO] ARRIVAL  -> Akhil
+2026-04-15 12:30:12,197 [INFO] ARRIVAL  -> Sasidhar
+2026-04-15 12:30:46,098 [INFO] ARRIVAL  -> Sasidhar
+2026-04-15 12:31:10,308 [INFO] New intruder registered: INTRUDER_0098
+2026-04-15 12:31:10,319 [INFO] Confirmed intruder after smoothing: low_prob(0.164) track=10_6
+2026-04-15 12:31:10,468 [INFO] [ALERT 1/2] [ALERT] Unknown person detected! [INTRUDER_0098] at 2026-04-15 12:31:10
+2026-04-15 12:31:12,383 [INFO] DEPARTURE -> Sasidhar
+2026-04-15 12:31:13,063 [INFO] Telegram alert sent successfully (attempt 1).
+2026-04-15 12:31:19,075 [INFO] Interrupted by user.
+2026-04-15 12:31:19,455 [INFO] Shutdown complete.
