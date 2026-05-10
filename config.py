@@ -98,8 +98,8 @@ CROP_PADDING = 0.20
 # -------------------------
 # Telegram credentials
 # -------------------------
-TELEGRAM_BOT_TOKEN = "8489650776:AAE8lV1AtvqzXz7L-X8u6kquk0Cuj5sOtM8"
-TELEGRAM_CHAT_ID   = "6034901248"
+TELEGRAM_BOT_TOKEN = "*****Your telegram bot token*****"
+TELEGRAM_CHAT_ID = "*****Your tlegram chat id*****"
 
 # -------------------------
 # Optional FAISS
